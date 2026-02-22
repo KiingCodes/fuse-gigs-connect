@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile, useUpdateProfile, useUploadAvatar } from "@/hooks/useData";
+import SEO from "@/components/SEO";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -78,6 +79,7 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO title="Your Profile" description="Edit your Fuse Gigs profile." path="/profile" />
       <Navbar />
       <div className="container mx-auto max-w-xl px-4 py-8">
         <Card className="shadow-elevated">

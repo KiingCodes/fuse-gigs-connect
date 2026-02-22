@@ -1,22 +1,36 @@
-import { useParams } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useDeleteHustle } from "@/hooks/useData";
 import Navbar from "@/components/Navbar";
+import SEO from "@/components/SEO";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MapPin, Star, MessageSquare, ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { MapPin, Star, MessageSquare, ArrowLeft, ChevronLeft, ChevronRight, Pencil, Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import type { HustleWithDetails } from "@/hooks/useData";
 
 const HustleDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const deleteHustle = useDeleteHustle();
   const [currentMedia, setCurrentMedia] = useState(0);
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
@@ -30,14 +44,12 @@ const HustleDetail = () => {
         .eq("id", id!)
         .single();
       if (error) throw error;
-      // Fetch profile separately
       const { data: profile } = await supabase.from("profiles").select("*").eq("user_id", data.user_id).single();
       return { ...data, profiles: profile } as unknown as HustleWithDetails;
     },
     enabled: !!id,
   });
 
-  // Track view
   useEffect(() => {
     if (id && user) {
       supabase.from("hustle_views").insert({ hustle_id: id, viewer_id: user.id }).then(() => {});
@@ -60,9 +72,37 @@ const HustleDetail = () => {
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      await deleteHustle.mutateAsync(id!);
+      toast.success("Hustle deleted");
+      navigate("/dashboard");
+    } catch (err: any) {
+      toast.error(err.message);
+    }
+  };
+
   const media = hustle?.hustle_media?.sort((a, b) => a.display_order - b.display_order) || [];
   const profileData = hustle?.profiles as any;
   const categoryData = hustle?.hustle_categories as any;
+  const isOwner = user && hustle && user.id === hustle.user_id;
+
+  const hustleJsonLd = hustle ? {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: hustle.title,
+    description: hustle.description,
+    provider: {
+      "@type": "Person",
+      name: profileData?.display_name || "Unknown",
+    },
+    areaServed: hustle.location || undefined,
+    offers: hustle.price ? {
+      "@type": "Offer",
+      price: hustle.price,
+      priceCurrency: "ZAR",
+    } : undefined,
+  } : undefined;
 
   if (isLoading) {
     return (
@@ -78,6 +118,7 @@ const HustleDetail = () => {
   if (!hustle) {
     return (
       <div className="min-h-screen bg-background">
+        <SEO title="Hustle Not Found" path={`/hustle/${id}`} />
         <Navbar />
         <div className="container mx-auto py-20 text-center">
           <p className="text-lg text-muted-foreground">Hustle not found</p>
@@ -89,30 +130,62 @@ const HustleDetail = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title={hustle.title}
+        description={hustle.description.slice(0, 155)}
+        path={`/hustle/${id}`}
+        image={media[0]?.media_url}
+        jsonLd={hustleJsonLd}
+      />
       <Navbar />
       <div className="container mx-auto max-w-4xl px-4 py-8">
-        <Link to="/" className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
-          <ArrowLeft className="h-4 w-4" /> Back to hustles
-        </Link>
+        <div className="mb-6 flex items-center justify-between">
+          <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <ArrowLeft className="h-4 w-4" /> Back to hustles
+          </Link>
+          {isOwner && (
+            <div className="flex gap-2">
+              <Button size="sm" variant="outline" className="gap-1" onClick={() => navigate(`/edit/${hustle.id}`)}>
+                <Pencil className="h-4 w-4" /> Edit
+              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button size="sm" variant="destructive" className="gap-1">
+                    <Trash2 className="h-4 w-4" /> Delete
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Delete this hustle?</AlertDialogTitle>
+                    <AlertDialogDescription>This will permanently delete "{hustle.title}" and all its media.</AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Delete</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
+          )}
+        </div>
 
         <div className="grid gap-8 lg:grid-cols-3">
           {/* Media & Details */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Media Gallery */}
             {media.length > 0 && (
               <div className="space-y-2">
                 <div className="relative aspect-video overflow-hidden rounded-xl bg-muted">
                   {media[currentMedia]?.media_type === "video" ? (
                     <video src={media[currentMedia].media_url} className="h-full w-full object-cover" controls />
                   ) : (
-                    <img src={media[currentMedia]?.media_url} alt={hustle.title} className="h-full w-full object-cover" />
+                    <img src={media[currentMedia]?.media_url} alt={hustle.title} className="h-full w-full object-cover" loading="lazy" />
                   )}
                   {media.length > 1 && (
                     <>
-                      <button onClick={() => setCurrentMedia((p) => (p > 0 ? p - 1 : media.length - 1))} className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 backdrop-blur-sm hover:bg-background transition-colors">
+                      <button onClick={() => setCurrentMedia((p) => (p > 0 ? p - 1 : media.length - 1))} className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 backdrop-blur-sm hover:bg-background transition-colors" aria-label="Previous image">
                         <ChevronLeft className="h-5 w-5" />
                       </button>
-                      <button onClick={() => setCurrentMedia((p) => (p < media.length - 1 ? p + 1 : 0))} className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 backdrop-blur-sm hover:bg-background transition-colors">
+                      <button onClick={() => setCurrentMedia((p) => (p < media.length - 1 ? p + 1 : 0))} className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 backdrop-blur-sm hover:bg-background transition-colors" aria-label="Next image">
                         <ChevronRight className="h-5 w-5" />
                       </button>
                     </>
@@ -130,7 +203,7 @@ const HustleDetail = () => {
                         {m.media_type === "video" ? (
                           <video src={m.media_url} className="h-full w-full object-cover" />
                         ) : (
-                          <img src={m.media_url} alt="" className="h-full w-full object-cover" />
+                          <img src={m.media_url} alt={`${hustle.title} media ${i + 1}`} className="h-full w-full object-cover" loading="lazy" />
                         )}
                       </button>
                     ))}
@@ -155,7 +228,6 @@ const HustleDetail = () => {
 
           {/* Sidebar */}
           <div className="space-y-4">
-            {/* Price */}
             <Card className="shadow-card">
               <CardContent className="p-6">
                 {hustle.price ? (
@@ -187,12 +259,11 @@ const HustleDetail = () => {
               </CardContent>
             </Card>
 
-            {/* Hustler profile */}
             <Card className="shadow-card">
               <CardContent className="p-6">
                 <div className="flex items-center gap-3">
                   <Avatar className="h-12 w-12">
-                    <AvatarImage src={profileData?.avatar_url || ""} />
+                    <AvatarImage src={profileData?.avatar_url || ""} alt={profileData?.display_name || "User avatar"} />
                     <AvatarFallback className="bg-primary text-primary-foreground">
                       {profileData?.display_name?.[0]?.toUpperCase() || "U"}
                     </AvatarFallback>

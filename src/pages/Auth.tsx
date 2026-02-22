@@ -17,6 +17,7 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs";
 import { useNavigate } from "react-router-dom";
+import SEO from "@/components/SEO";
 import { toast } from "sonner";
 import logo from "@/assets/logo.png";
 
@@ -68,6 +69,7 @@ const Auth = () => {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
+      <SEO title="Sign In" description="Sign in or create an account to start posting your hustle." path="/auth" />
       <Card className="w-full max-w-md shadow-elevated">
         <CardHeader className="text-center">
           {/* Logo */}

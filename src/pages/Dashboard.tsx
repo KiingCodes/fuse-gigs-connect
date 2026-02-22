@@ -1,22 +1,45 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { useMyHustles, useDashboardStats } from "@/hooks/useData";
+import { useMyHustles, useDashboardStats, useDeleteHustle } from "@/hooks/useData";
 import Navbar from "@/components/Navbar";
+import SEO from "@/components/SEO";
 import HustleCard from "@/components/HustleCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Eye, MessageSquare, Briefcase, TrendingUp, Plus } from "lucide-react";
+import { Eye, MessageSquare, Briefcase, TrendingUp, Plus, Pencil, Trash2 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { data: stats, isLoading: statsLoading } = useDashboardStats();
   const { data: myHustles, isLoading: hustlesLoading } = useMyHustles();
+  const deleteHustle = useDeleteHustle();
 
   if (!user) {
     navigate("/auth");
     return null;
   }
+
+  const handleDelete = async (hustleId: string) => {
+    try {
+      await deleteHustle.mutateAsync(hustleId);
+      toast.success("Hustle deleted successfully");
+    } catch (err: any) {
+      toast.error(err.message || "Failed to delete hustle");
+    }
+  };
 
   const statCards = [
     { label: "Total Hustles", value: stats?.totalHustles || 0, icon: Briefcase, color: "text-primary" },
@@ -27,6 +50,7 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO title="Dashboard" description="Manage your hustles and track performance on Fuse Gigs." path="/dashboard" />
       <Navbar />
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8 flex items-center justify-between">
@@ -70,7 +94,55 @@ const Dashboard = () => {
           ) : myHustles && myHustles.length > 0 ? (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {myHustles.map((hustle) => (
-                <HustleCard key={hustle.id} hustle={hustle} />
+                <div key={hustle.id} className="relative group">
+                  <HustleCard hustle={hustle} />
+                  <div className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                    <Button
+                      size="icon"
+                      variant="secondary"
+                      className="h-8 w-8 bg-background/90 backdrop-blur-sm shadow-md"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        navigate(`/edit/${hustle.id}`);
+                      }}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          size="icon"
+                          variant="destructive"
+                          className="h-8 w-8 shadow-md"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                          }}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Delete this hustle?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This will permanently delete "{hustle.title}" and all its media. This action cannot be undone.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => handleDelete(hustle.id)}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                          >
+                            Delete
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
+                </div>
               ))}
             </div>
           ) : (
