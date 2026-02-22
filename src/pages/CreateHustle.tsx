@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCategories, useCreateHustle, useUploadHustleMedia } from "@/hooks/useData";
 import Navbar from "@/components/Navbar";
+import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -85,6 +86,7 @@ const CreateHustle = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO title="Post a New Hustle" description="Create a new hustle listing on Fuse Gigs." path="/create" />
       <Navbar />
       <div className="container mx-auto max-w-2xl px-4 py-8">
         <Card className="shadow-elevated">

@@ -1,6 +1,7 @@
 import { useHustles, useFeaturedHustles, useCategories } from "@/hooks/useData";
 import { useAuth } from "@/contexts/AuthContext";
 import Navbar from "@/components/Navbar";
+import SEO from "@/components/SEO";
 import HustleCard from "@/components/HustleCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +21,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO title="Discover Local Hustles" path="/" />
       <Navbar />
 
       {/* Hero Section */}

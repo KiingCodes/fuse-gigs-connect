@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useHustles, useCategories } from "@/hooks/useData";
 import Navbar from "@/components/Navbar";
+import SEO from "@/components/SEO";
 import HustleCard from "@/components/HustleCard";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +16,7 @@ const Explore = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO title="Explore Hustles" description="Browse local services and freelancers in your community." path="/explore" />
       <Navbar />
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
