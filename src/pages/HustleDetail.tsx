@@ -51,10 +51,10 @@ const HustleDetail = () => {
   });
 
   useEffect(() => {
-    if (id && user) {
+    if (id && user && hustle && user.id !== hustle.user_id) {
       supabase.from("hustle_views").insert({ hustle_id: id, viewer_id: user.id }).then(() => {});
     }
-  }, [id, user]);
+  }, [id, user, hustle]);
 
   const sendInquiry = async () => {
     if (!user) { toast.error("Please sign in to send a message"); return; }
