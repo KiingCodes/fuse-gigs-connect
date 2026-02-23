@@ -10,6 +10,9 @@ export interface Profile {
   avatar_url: string | null;
   location: string | null;
   phone: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  response_time_minutes: number | null;
   created_at: string;
   updated_at: string;
 }
@@ -30,8 +33,11 @@ export interface Hustle {
   price: number | null;
   price_type: string | null;
   location: string | null;
+  latitude: number | null;
+  longitude: number | null;
   is_featured: boolean;
   is_active: boolean;
+  is_available_now: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -47,8 +53,9 @@ export interface HustleMedia {
 
 export interface HustleWithDetails extends Hustle {
   profiles?: Profile;
-  hustle_categories?: HustleCategory;
+  hustle_categories?: Partial<HustleCategory>;
   hustle_media?: HustleMedia[];
+  distance?: number; // calculated client-side in km
 }
 
 export const useProfile = () => {
@@ -167,7 +174,7 @@ export const useCreateHustle = () => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
   return useMutation({
-    mutationFn: async (hustle: { title: string; description: string; category_id: string; price: number | null; price_type: string; location: string }) => {
+    mutationFn: async (hustle: { title: string; description: string; category_id: string; price: number | null; price_type: string; location: string; latitude?: number | null; longitude?: number | null; is_available_now?: boolean }) => {
       if (!user) throw new Error("Not authenticated");
       const { data, error } = await supabase
         .from("hustles")
@@ -266,7 +273,7 @@ export const useUpdateHustle = () => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
   return useMutation({
-    mutationFn: async (hustle: { id: string; title: string; description: string; category_id: string; price: number | null; price_type: string; location: string }) => {
+    mutationFn: async (hustle: { id: string; title: string; description: string; category_id: string; price: number | null; price_type: string; location: string; latitude?: number | null; longitude?: number | null; is_available_now?: boolean }) => {
       if (!user) throw new Error("Not authenticated");
       const { id, ...updates } = hustle;
       const { data, error } = await supabase

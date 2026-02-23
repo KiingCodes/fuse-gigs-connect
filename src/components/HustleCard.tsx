@@ -1,7 +1,7 @@
 import { HustleWithDetails } from "@/hooks/useData";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Star } from "lucide-react";
+import { MapPin, Star, Navigation } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface HustleCardProps {
@@ -36,6 +36,13 @@ const HustleCard = ({ hustle, featured }: HustleCardProps) => {
               </Badge>
             </div>
           )}
+          <div className="absolute top-3 right-3 flex gap-1">
+            {hustle.is_available_now && (
+              <Badge className="bg-success text-success-foreground border-0 text-xs">
+                Available Now
+              </Badge>
+            )}
+          </div>
           {hustle.price && (
             <div className="absolute bottom-3 right-3">
               <Badge variant="secondary" className="bg-background/90 backdrop-blur-sm font-semibold text-foreground">
@@ -65,12 +72,20 @@ const HustleCard = ({ hustle, featured }: HustleCardProps) => {
               </div>
               <span className="text-xs text-muted-foreground">{profileData?.display_name || "Unknown"}</span>
             </div>
-            {hustle.location && (
-              <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                <MapPin className="h-3 w-3" />
-                <span className="line-clamp-1">{hustle.location}</span>
-              </div>
-            )}
+            <div className="flex items-center gap-2">
+              {hustle.distance != null && (
+                <div className="flex items-center gap-1 text-xs text-primary font-medium">
+                  <Navigation className="h-3 w-3" />
+                  <span>{hustle.distance < 1 ? `${(hustle.distance * 1000).toFixed(0)}m` : `${hustle.distance.toFixed(1)}km`}</span>
+                </div>
+              )}
+              {hustle.location && (
+                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <MapPin className="h-3 w-3" />
+                  <span className="line-clamp-1 max-w-[80px]">{hustle.location}</span>
+                </div>
+              )}
+            </div>
           </div>
         </CardContent>
       </Card>

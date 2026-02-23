@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCategories, useCreateHustle, useUploadHustleMedia } from "@/hooks/useData";
+import { useGeolocation } from "@/hooks/useGeolocation";
 import Navbar from "@/components/Navbar";
 import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
@@ -10,8 +11,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { Upload, X, Image as ImageIcon } from "lucide-react";
+import { Upload, X, Locate, Loader2 } from "lucide-react";
 
 const CreateHustle = () => {
   const { user } = useAuth();
@@ -20,6 +22,7 @@ const CreateHustle = () => {
   const createHustle = useCreateHustle();
   const uploadMedia = useUploadHustleMedia();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { location: geoLocation, loading: geoLoading, requestLocation } = useGeolocation();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -27,6 +30,7 @@ const CreateHustle = () => {
   const [price, setPrice] = useState("");
   const [priceType, setPriceType] = useState("fixed");
   const [location, setLocation] = useState("");
+  const [isAvailableNow, setIsAvailableNow] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
@@ -55,6 +59,11 @@ const CreateHustle = () => {
     setPreviews(previews.filter((_, i) => i !== idx));
   };
 
+  const handleUseGPS = () => {
+    requestLocation();
+    toast.info("Getting your GPS location...");
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title || !description || !categoryId) {
@@ -70,6 +79,9 @@ const CreateHustle = () => {
         price: price ? parseFloat(price) : null,
         price_type: priceType,
         location,
+        latitude: geoLocation?.lat ?? null,
+        longitude: geoLocation?.lng ?? null,
+        is_available_now: isAvailableNow,
       });
 
       if (files.length > 0) {
@@ -138,6 +150,32 @@ const CreateHustle = () => {
               <div className="space-y-2">
                 <Label htmlFor="location">Location</Label>
                 <Input id="location" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="e.g. Johannesburg, Soweto" />
+              </div>
+
+              {/* GPS Location */}
+              <div className="rounded-lg border border-border p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <Label className="text-sm font-medium">GPS Location</Label>
+                  <Button type="button" variant="outline" size="sm" onClick={handleUseGPS} disabled={geoLoading} className="gap-2">
+                    {geoLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Locate className="h-4 w-4" />}
+                    Use My Location
+                  </Button>
+                </div>
+                {geoLocation && (
+                  <p className="text-xs text-muted-foreground">
+                    📍 Coordinates: {geoLocation.lat.toFixed(4)}, {geoLocation.lng.toFixed(4)}
+                  </p>
+                )}
+                <p className="text-xs text-muted-foreground">Adding GPS helps customers find you on the map.</p>
+              </div>
+
+              {/* Available Now */}
+              <div className="flex items-center gap-3 rounded-lg border border-border p-4">
+                <Switch id="available" checked={isAvailableNow} onCheckedChange={setIsAvailableNow} />
+                <div>
+                  <Label htmlFor="available" className="text-sm font-medium cursor-pointer">Available Now</Label>
+                  <p className="text-xs text-muted-foreground">Mark yourself as currently available for work</p>
+                </div>
               </div>
 
               {/* Media Upload */}

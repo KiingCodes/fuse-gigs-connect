@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCategories, useUpdateHustle, useUploadHustleMedia, useDeleteHustleMedia } from "@/hooks/useData";
+import { useGeolocation } from "@/hooks/useGeolocation";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
@@ -12,8 +13,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { Upload, X } from "lucide-react";
+import { Upload, X, Locate, Loader2 } from "lucide-react";
 import type { HustleWithDetails } from "@/hooks/useData";
 
 const EditHustle = () => {
@@ -32,11 +34,13 @@ const EditHustle = () => {
   const [price, setPrice] = useState("");
   const [priceType, setPriceType] = useState("fixed");
   const [location, setLocation] = useState("");
+  const [isAvailableNow, setIsAvailableNow] = useState(false);
   const [existingMedia, setExistingMedia] = useState<any[]>([]);
   const [newFiles, setNewFiles] = useState<File[]>([]);
   const [newPreviews, setNewPreviews] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [initialized, setInitialized] = useState(false);
+  const { location: geoLocation, loading: geoLoading, requestLocation, setLocation: setGeoLocation } = useGeolocation();
 
   const { data: hustle, isLoading } = useQuery({
     queryKey: ["hustle", id],
@@ -60,6 +64,10 @@ const EditHustle = () => {
       setPrice(hustle.price?.toString() || "");
       setPriceType(hustle.price_type || "fixed");
       setLocation(hustle.location || "");
+      setIsAvailableNow(hustle.is_available_now || false);
+      if (hustle.latitude && hustle.longitude) {
+        setGeoLocation({ lat: hustle.latitude, lng: hustle.longitude });
+      }
       setExistingMedia(hustle.hustle_media?.sort((a, b) => a.display_order - b.display_order) || []);
       setInitialized(true);
     }
@@ -119,6 +127,9 @@ const EditHustle = () => {
         price: price ? parseFloat(price) : null,
         price_type: priceType,
         location,
+        latitude: geoLocation?.lat ?? null,
+        longitude: geoLocation?.lng ?? null,
+        is_available_now: isAvailableNow,
       });
 
       if (newFiles.length > 0) {
@@ -198,6 +209,29 @@ const EditHustle = () => {
               <div className="space-y-2">
                 <Label htmlFor="location">Location</Label>
                 <Input id="location" value={location} onChange={(e) => setLocation(e.target.value)} />
+              </div>
+
+              {/* GPS Location */}
+              <div className="rounded-lg border border-border p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <Label className="text-sm font-medium">GPS Location</Label>
+                  <Button type="button" variant="outline" size="sm" onClick={() => { requestLocation(); toast.info("Getting location..."); }} disabled={geoLoading} className="gap-2">
+                    {geoLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Locate className="h-4 w-4" />}
+                    Use My Location
+                  </Button>
+                </div>
+                {geoLocation && (
+                  <p className="text-xs text-muted-foreground">📍 {geoLocation.lat.toFixed(4)}, {geoLocation.lng.toFixed(4)}</p>
+                )}
+              </div>
+
+              {/* Available Now */}
+              <div className="flex items-center gap-3 rounded-lg border border-border p-4">
+                <Switch id="available" checked={isAvailableNow} onCheckedChange={setIsAvailableNow} />
+                <div>
+                  <Label htmlFor="available" className="text-sm font-medium cursor-pointer">Available Now</Label>
+                  <p className="text-xs text-muted-foreground">Mark yourself as currently available</p>
+                </div>
               </div>
 
               {/* Media */}
