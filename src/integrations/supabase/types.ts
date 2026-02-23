@@ -138,8 +138,11 @@ export type Database = {
           description: string
           id: string
           is_active: boolean | null
+          is_available_now: boolean | null
           is_featured: boolean | null
+          latitude: number | null
           location: string | null
+          longitude: number | null
           price: number | null
           price_type: string | null
           title: string
@@ -152,8 +155,11 @@ export type Database = {
           description: string
           id?: string
           is_active?: boolean | null
+          is_available_now?: boolean | null
           is_featured?: boolean | null
+          latitude?: number | null
           location?: string | null
+          longitude?: number | null
           price?: number | null
           price_type?: string | null
           title: string
@@ -166,8 +172,11 @@ export type Database = {
           description?: string
           id?: string
           is_active?: boolean | null
+          is_available_now?: boolean | null
           is_featured?: boolean | null
+          latitude?: number | null
           location?: string | null
+          longitude?: number | null
           price?: number | null
           price_type?: string | null
           title?: string
@@ -191,8 +200,11 @@ export type Database = {
           created_at: string
           display_name: string | null
           id: string
+          latitude: number | null
           location: string | null
+          longitude: number | null
           phone: string | null
+          response_time_minutes: number | null
           updated_at: string
           user_id: string
         }
@@ -202,8 +214,11 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           id?: string
+          latitude?: number | null
           location?: string | null
+          longitude?: number | null
           phone?: string | null
+          response_time_minutes?: number | null
           updated_at?: string
           user_id: string
         }
@@ -213,8 +228,11 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           id?: string
+          latitude?: number | null
           location?: string | null
+          longitude?: number | null
           phone?: string | null
+          response_time_minutes?: number | null
           updated_at?: string
           user_id?: string
         }
