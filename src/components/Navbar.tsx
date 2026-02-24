@@ -4,21 +4,12 @@ import { useProfile } from "@/hooks/useData";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Plus,
-  LayoutDashboard,
-  User,
-  LogOut,
-  Menu,
-  X,
-} from "lucide-react";
+import { Plus, LayoutDashboard, User, LogOut, Menu, X, MessageSquare } from "lucide-react";
 import { useState } from "react";
 import logo from "@/assets/logo.png";
+import NotificationBell from "@/components/NotificationBell";
 
 const Navbar = () => {
   const { user, signOut } = useAuth();
@@ -29,45 +20,32 @@ const Navbar = () => {
   return (
     <nav className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        
-        {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
-          <img
-            src={logo}
-            alt="Fuse Gigs Logo"
-            className="h-12 w-12 object-contain"
-          />
-          <span className="text-xl font-bold text-foreground">
-            Fuse Gigs
-          </span>
+          <img src={logo} alt="Fuse Gigs Logo" className="h-12 w-12 object-contain" />
+          <span className="text-xl font-bold text-foreground">Fuse Gigs</span>
         </Link>
 
-        {/* Desktop Navigation */}
-        <div className="hidden items-center gap-3 md:flex">
+        {/* Desktop */}
+        <div className="hidden items-center gap-2 md:flex">
           <Link to="/explore">
-            <Button variant="ghost" size="sm">
-              Explore
-            </Button>
+            <Button variant="ghost" size="sm">Explore</Button>
           </Link>
-
           {user ? (
             <>
               <Link to="/create">
-                <Button
-                  size="sm"
-                  className="gradient-primary text-primary-foreground gap-1"
-                >
+                <Button size="sm" className="gradient-primary text-primary-foreground gap-1">
                   <Plus className="h-4 w-4" /> Post Hustle
                 </Button>
               </Link>
-
+              <Link to="/messages">
+                <Button variant="ghost" size="icon" className="rounded-full">
+                  <MessageSquare className="h-5 w-5" />
+                </Button>
+              </Link>
+              <NotificationBell />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="rounded-full"
-                  >
+                  <Button variant="ghost" size="icon" className="rounded-full">
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={profile?.avatar_url || ""} />
                       <AvatarFallback className="bg-primary text-primary-foreground text-xs">
@@ -76,53 +54,29 @@ const Navbar = () => {
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-
                 <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem
-                    onClick={() => navigate("/dashboard")}
-                  >
-                    <LayoutDashboard className="mr-2 h-4 w-4" />
-                    Dashboard
+                  <DropdownMenuItem onClick={() => navigate("/dashboard")}>
+                    <LayoutDashboard className="mr-2 h-4 w-4" /> Dashboard
                   </DropdownMenuItem>
-
-                  <DropdownMenuItem
-                    onClick={() => navigate("/profile")}
-                  >
-                    <User className="mr-2 h-4 w-4" />
-                    Profile
+                  <DropdownMenuItem onClick={() => navigate("/profile")}>
+                    <User className="mr-2 h-4 w-4" /> Profile
                   </DropdownMenuItem>
-
                   <DropdownMenuItem onClick={() => signOut()}>
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Sign Out
+                    <LogOut className="mr-2 h-4 w-4" /> Sign Out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </>
           ) : (
             <Link to="/auth">
-              <Button
-                size="sm"
-                className="gradient-primary text-primary-foreground"
-              >
-                Sign In
-              </Button>
+              <Button size="sm" className="gradient-primary text-primary-foreground">Sign In</Button>
             </Link>
           )}
         </div>
 
         {/* Mobile Hamburger */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="md:hidden"
-          onClick={() => setMobileOpen(!mobileOpen)}
-        >
-          {mobileOpen ? (
-            <X className="h-5 w-5" />
-          ) : (
-            <Menu className="h-5 w-5" />
-          )}
+        <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setMobileOpen(!mobileOpen)}>
+          {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </Button>
       </div>
 
@@ -130,75 +84,38 @@ const Navbar = () => {
       {mobileOpen && (
         <div className="border-t border-border bg-background px-4 pb-4 md:hidden">
           <div className="flex flex-col gap-2 pt-2">
-            <Link
-              to="/explore"
-              onClick={() => setMobileOpen(false)}
-            >
-              <Button
-                variant="ghost"
-                className="w-full justify-start"
-              >
-                Explore
-              </Button>
+            <Link to="/explore" onClick={() => setMobileOpen(false)}>
+              <Button variant="ghost" className="w-full justify-start">Explore</Button>
             </Link>
-
             {user ? (
               <>
-                <Link
-                  to="/create"
-                  onClick={() => setMobileOpen(false)}
-                >
+                <Link to="/create" onClick={() => setMobileOpen(false)}>
                   <Button className="w-full gradient-primary text-primary-foreground gap-1">
                     <Plus className="h-4 w-4" /> Post Hustle
                   </Button>
                 </Link>
-
-                <Link
-                  to="/dashboard"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start"
-                  >
-                    <LayoutDashboard className="mr-2 h-4 w-4" />
-                    Dashboard
+                <Link to="/messages" onClick={() => setMobileOpen(false)}>
+                  <Button variant="ghost" className="w-full justify-start">
+                    <MessageSquare className="mr-2 h-4 w-4" /> Messages
                   </Button>
                 </Link>
-
-                <Link
-                  to="/profile"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start"
-                  >
-                    <User className="mr-2 h-4 w-4" />
-                    Profile
+                <Link to="/dashboard" onClick={() => setMobileOpen(false)}>
+                  <Button variant="ghost" className="w-full justify-start">
+                    <LayoutDashboard className="mr-2 h-4 w-4" /> Dashboard
                   </Button>
                 </Link>
-
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start"
-                  onClick={() => {
-                    signOut();
-                    setMobileOpen(false);
-                  }}
-                >
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Sign Out
+                <Link to="/profile" onClick={() => setMobileOpen(false)}>
+                  <Button variant="ghost" className="w-full justify-start">
+                    <User className="mr-2 h-4 w-4" /> Profile
+                  </Button>
+                </Link>
+                <Button variant="ghost" className="w-full justify-start" onClick={() => { signOut(); setMobileOpen(false); }}>
+                  <LogOut className="mr-2 h-4 w-4" /> Sign Out
                 </Button>
               </>
             ) : (
-              <Link
-                to="/auth"
-                onClick={() => setMobileOpen(false)}
-              >
-                <Button className="w-full gradient-primary text-primary-foreground">
-                  Sign In
-                </Button>
+              <Link to="/auth" onClick={() => setMobileOpen(false)}>
+                <Button className="w-full gradient-primary text-primary-foreground">Sign In</Button>
               </Link>
             )}
           </div>

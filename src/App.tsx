@@ -13,6 +13,8 @@ import CreateHustle from "./pages/CreateHustle";
 import EditHustle from "./pages/EditHustle";
 import Explore from "./pages/Explore";
 import HustleDetail from "./pages/HustleDetail";
+import Conversations from "./pages/Conversations";
+import Chat from "./pages/Chat";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +36,8 @@ const App = () => (
               <Route path="/edit/:id" element={<EditHustle />} />
               <Route path="/explore" element={<Explore />} />
               <Route path="/hustle/:id" element={<HustleDetail />} />
+              <Route path="/messages" element={<Conversations />} />
+              <Route path="/chat/:id" element={<Chat />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

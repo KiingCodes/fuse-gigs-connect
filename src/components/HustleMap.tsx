@@ -59,11 +59,12 @@ const HustleMap = ({ hustles, userLocation, className }: HustleMapProps) => {
         const marker = L.marker([hustle.latitude, hustle.longitude])
           .addTo(map)
           .bindPopup(
-            `<div style="min-width:150px">
+            `<div style="min-width:160px">
               <strong>${hustle.title}</strong>
               <br/><span style="color:#666">${hustle.location || ""}</span>
               ${hustle.price ? `<br/><strong>R${hustle.price}</strong>` : ""}
               ${hustle.distance != null ? `<br/><small>${hustle.distance.toFixed(1)} km away</small>` : ""}
+              <br/><a href="/hustle/${hustle.id}" style="color:hsl(24,95%,53%);font-weight:600;text-decoration:none">View Details →</a>
             </div>`
           );
         markers.push(marker);

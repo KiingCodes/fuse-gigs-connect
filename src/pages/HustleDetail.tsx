@@ -3,26 +3,20 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useDeleteHustle } from "@/hooks/useData";
+import { useStartConversation } from "@/hooks/useChat";
 import Navbar from "@/components/Navbar";
 import SEO from "@/components/SEO";
+import VerificationBadge from "@/components/VerificationBadge";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MapPin, Star, MessageSquare, ArrowLeft, ChevronLeft, ChevronRight, Pencil, Trash2 } from "lucide-react";
+import { MapPin, Star, MessageSquare, ArrowLeft, ChevronLeft, ChevronRight, Pencil, Trash2, Phone, Mail, Globe } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { Textarea } from "@/components/ui/textarea";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import type { HustleWithDetails } from "@/hooks/useData";
 
@@ -31,9 +25,8 @@ const HustleDetail = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const deleteHustle = useDeleteHustle();
+  const startConversation = useStartConversation();
   const [currentMedia, setCurrentMedia] = useState(0);
-  const [message, setMessage] = useState("");
-  const [sending, setSending] = useState(false);
 
   const { data: hustle, isLoading } = useQuery({
     queryKey: ["hustle", id],
@@ -56,19 +49,14 @@ const HustleDetail = () => {
     }
   }, [id, user, hustle]);
 
-  const sendInquiry = async () => {
-    if (!user) { toast.error("Please sign in to send a message"); return; }
-    if (!message.trim()) return;
-    setSending(true);
-    const { error } = await supabase.from("hustle_inquiries").insert({
-      hustle_id: id!,
-      user_id: user.id,
-      message: message.trim(),
-    });
-    setSending(false);
-    if (error) { toast.error(error.message); } else {
-      toast.success("Message sent!");
-      setMessage("");
+  const handleStartChat = async () => {
+    if (!user) { toast.error("Please sign in first"); return; }
+    if (!hustle) return;
+    try {
+      const conv = await startConversation.mutateAsync({ otherUserId: hustle.user_id, hustleId: hustle.id });
+      navigate(`/chat/${conv.id}`);
+    } catch (err: any) {
+      toast.error(err.message);
     }
   };
 
@@ -86,22 +74,16 @@ const HustleDetail = () => {
   const profileData = hustle?.profiles as any;
   const categoryData = hustle?.hustle_categories as any;
   const isOwner = user && hustle && user.id === hustle.user_id;
+  const hustleAny = hustle as any;
 
   const hustleJsonLd = hustle ? {
     "@context": "https://schema.org",
     "@type": "Service",
     name: hustle.title,
     description: hustle.description,
-    provider: {
-      "@type": "Person",
-      name: profileData?.display_name || "Unknown",
-    },
+    provider: { "@type": "Person", name: profileData?.display_name || "Unknown" },
     areaServed: hustle.location || undefined,
-    offers: hustle.price ? {
-      "@type": "Offer",
-      price: hustle.price,
-      priceCurrency: "ZAR",
-    } : undefined,
+    offers: hustle.price ? { "@type": "Offer", price: hustle.price, priceCurrency: "ZAR" } : undefined,
   } : undefined;
 
   if (isLoading) {
@@ -130,18 +112,12 @@ const HustleDetail = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEO
-        title={hustle.title}
-        description={hustle.description.slice(0, 155)}
-        path={`/hustle/${id}`}
-        image={media[0]?.media_url}
-        jsonLd={hustleJsonLd}
-      />
+      <SEO title={hustle.title} description={hustle.description.slice(0, 155)} path={`/hustle/${id}`} image={media[0]?.media_url} jsonLd={hustleJsonLd} />
       <Navbar />
       <div className="container mx-auto max-w-4xl px-4 py-8">
         <div className="mb-6 flex items-center justify-between">
           <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
-            <ArrowLeft className="h-4 w-4" /> Back to hustles
+            <ArrowLeft className="h-4 w-4" /> Back
           </Link>
           {isOwner && (
             <div className="flex gap-2">
@@ -150,14 +126,12 @@ const HustleDetail = () => {
               </Button>
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button size="sm" variant="destructive" className="gap-1">
-                    <Trash2 className="h-4 w-4" /> Delete
-                  </Button>
+                  <Button size="sm" variant="destructive" className="gap-1"><Trash2 className="h-4 w-4" /> Delete</Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
                     <AlertDialogTitle>Delete this hustle?</AlertDialogTitle>
-                    <AlertDialogDescription>This will permanently delete "{hustle.title}" and all its media.</AlertDialogDescription>
+                    <AlertDialogDescription>This will permanently delete "{hustle.title}".</AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
@@ -170,8 +144,8 @@ const HustleDetail = () => {
         </div>
 
         <div className="grid gap-8 lg:grid-cols-3">
-          {/* Media & Details */}
           <div className="lg:col-span-2 space-y-6">
+            {/* Gallery */}
             {media.length > 0 && (
               <div className="space-y-2">
                 <div className="relative aspect-video overflow-hidden rounded-xl bg-muted">
@@ -182,10 +156,10 @@ const HustleDetail = () => {
                   )}
                   {media.length > 1 && (
                     <>
-                      <button onClick={() => setCurrentMedia((p) => (p > 0 ? p - 1 : media.length - 1))} className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 backdrop-blur-sm hover:bg-background transition-colors" aria-label="Previous image">
+                      <button onClick={() => setCurrentMedia((p) => (p > 0 ? p - 1 : media.length - 1))} className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 backdrop-blur-sm hover:bg-background transition-colors">
                         <ChevronLeft className="h-5 w-5" />
                       </button>
-                      <button onClick={() => setCurrentMedia((p) => (p < media.length - 1 ? p + 1 : 0))} className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 backdrop-blur-sm hover:bg-background transition-colors" aria-label="Next image">
+                      <button onClick={() => setCurrentMedia((p) => (p < media.length - 1 ? p + 1 : 0))} className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 backdrop-blur-sm hover:bg-background transition-colors">
                         <ChevronRight className="h-5 w-5" />
                       </button>
                     </>
@@ -203,7 +177,7 @@ const HustleDetail = () => {
                         {m.media_type === "video" ? (
                           <video src={m.media_url} className="h-full w-full object-cover" />
                         ) : (
-                          <img src={m.media_url} alt={`${hustle.title} media ${i + 1}`} className="h-full w-full object-cover" loading="lazy" />
+                          <img src={m.media_url} alt="" className="h-full w-full object-cover" loading="lazy" />
                         )}
                       </button>
                     ))}
@@ -215,6 +189,7 @@ const HustleDetail = () => {
             <div>
               <div className="mb-2 flex items-center gap-2">
                 {categoryData && <Badge variant="outline">{categoryData.name}</Badge>}
+                {hustle.is_available_now && <Badge className="bg-success text-success-foreground border-0 text-xs">Available Now</Badge>}
               </div>
               <h1 className="mb-2 text-3xl font-bold text-foreground">{hustle.title}</h1>
               {hustle.location && (
@@ -223,6 +198,28 @@ const HustleDetail = () => {
                 </div>
               )}
               <p className="text-foreground/80 leading-relaxed whitespace-pre-wrap">{hustle.description}</p>
+
+              {/* Contact Info */}
+              {(hustleAny.contact_phone || hustleAny.contact_email || hustleAny.website_url) && (
+                <div className="mt-6 space-y-2 rounded-lg border border-border p-4">
+                  <h3 className="font-semibold text-foreground text-sm">Contact Information</h3>
+                  {hustleAny.contact_phone && (
+                    <a href={`tel:${hustleAny.contact_phone}`} className="flex items-center gap-2 text-sm text-primary hover:underline">
+                      <Phone className="h-4 w-4" /> {hustleAny.contact_phone}
+                    </a>
+                  )}
+                  {hustleAny.contact_email && (
+                    <a href={`mailto:${hustleAny.contact_email}`} className="flex items-center gap-2 text-sm text-primary hover:underline">
+                      <Mail className="h-4 w-4" /> {hustleAny.contact_email}
+                    </a>
+                  )}
+                  {hustleAny.website_url && (
+                    <a href={hustleAny.website_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-primary hover:underline">
+                      <Globe className="h-4 w-4" /> {hustleAny.website_url}
+                    </a>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
@@ -243,12 +240,9 @@ const HustleDetail = () => {
                 )}
 
                 {user && user.id !== hustle.user_id && (
-                  <div className="space-y-3">
-                    <Textarea value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Send a message to the hustler..." rows={3} />
-                    <Button onClick={sendInquiry} disabled={sending || !message.trim()} className="w-full gradient-primary text-primary-foreground gap-1">
-                      <MessageSquare className="h-4 w-4" /> {sending ? "Sending..." : "Send Inquiry"}
-                    </Button>
-                  </div>
+                  <Button onClick={handleStartChat} className="w-full gradient-primary text-primary-foreground gap-2" disabled={startConversation.isPending}>
+                    <MessageSquare className="h-4 w-4" /> {startConversation.isPending ? "Starting..." : "Chat with Hustler"}
+                  </Button>
                 )}
 
                 {!user && (
@@ -263,13 +257,16 @@ const HustleDetail = () => {
               <CardContent className="p-6">
                 <div className="flex items-center gap-3">
                   <Avatar className="h-12 w-12">
-                    <AvatarImage src={profileData?.avatar_url || ""} alt={profileData?.display_name || "User avatar"} />
+                    <AvatarImage src={profileData?.avatar_url || ""} alt={profileData?.display_name || "User"} />
                     <AvatarFallback className="bg-primary text-primary-foreground">
                       {profileData?.display_name?.[0]?.toUpperCase() || "U"}
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="font-semibold text-foreground">{profileData?.display_name || "Unknown"}</p>
+                    <div className="flex items-center gap-2">
+                      <p className="font-semibold text-foreground">{profileData?.display_name || "Unknown"}</p>
+                      <VerificationBadge level={profileData?.verification_level ?? 0} showLabel />
+                    </div>
                     {profileData?.location && (
                       <p className="text-sm text-muted-foreground flex items-center gap-1">
                         <MapPin className="h-3 w-3" /> {profileData.location}
@@ -277,8 +274,9 @@ const HustleDetail = () => {
                     )}
                   </div>
                 </div>
-                {profileData?.bio && (
-                  <p className="mt-3 text-sm text-muted-foreground">{profileData.bio}</p>
+                {profileData?.bio && <p className="mt-3 text-sm text-muted-foreground">{profileData.bio}</p>}
+                {profileData?.response_time_minutes && (
+                  <p className="mt-2 text-xs text-muted-foreground">⚡ Typically responds in {profileData.response_time_minutes} min</p>
                 )}
               </CardContent>
             </Card>

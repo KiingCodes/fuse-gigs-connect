@@ -14,6 +14,41 @@ export type Database = {
   }
   public: {
     Tables: {
+      conversations: {
+        Row: {
+          created_at: string
+          hustle_id: string | null
+          id: string
+          participant_1: string
+          participant_2: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          hustle_id?: string | null
+          id?: string
+          participant_1: string
+          participant_2: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          hustle_id?: string | null
+          id?: string
+          participant_1?: string
+          participant_2?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversations_hustle_id_fkey"
+            columns: ["hustle_id"]
+            isOneToOne: false
+            referencedRelation: "hustles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       hustle_categories: {
         Row: {
           description: string | null
@@ -134,6 +169,8 @@ export type Database = {
       hustles: {
         Row: {
           category_id: string | null
+          contact_email: string | null
+          contact_phone: string | null
           created_at: string
           description: string
           id: string
@@ -148,9 +185,12 @@ export type Database = {
           title: string
           updated_at: string
           user_id: string
+          website_url: string | null
         }
         Insert: {
           category_id?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
           created_at?: string
           description: string
           id?: string
@@ -165,9 +205,12 @@ export type Database = {
           title: string
           updated_at?: string
           user_id: string
+          website_url?: string | null
         }
         Update: {
           category_id?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
           created_at?: string
           description?: string
           id?: string
@@ -182,6 +225,7 @@ export type Database = {
           title?: string
           updated_at?: string
           user_id?: string
+          website_url?: string | null
         }
         Relationships: [
           {
@@ -192,6 +236,80 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      messages: {
+        Row: {
+          content: string | null
+          conversation_id: string
+          created_at: string
+          id: string
+          is_read: boolean
+          media_url: string | null
+          message_type: string
+          sender_id: string
+        }
+        Insert: {
+          content?: string | null
+          conversation_id: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          media_url?: string | null
+          message_type?: string
+          sender_id: string
+        }
+        Update: {
+          content?: string | null
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          media_url?: string | null
+          message_type?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          is_read: boolean
+          reference_id: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          reference_id?: string | null
+          title: string
+          type?: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          reference_id?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -207,6 +325,7 @@ export type Database = {
           response_time_minutes: number | null
           updated_at: string
           user_id: string
+          verification_level: number
         }
         Insert: {
           avatar_url?: string | null
@@ -221,6 +340,7 @@ export type Database = {
           response_time_minutes?: number | null
           updated_at?: string
           user_id: string
+          verification_level?: number
         }
         Update: {
           avatar_url?: string | null
@@ -233,6 +353,49 @@ export type Database = {
           longitude?: number | null
           phone?: string | null
           response_time_minutes?: number | null
+          updated_at?: string
+          user_id?: string
+          verification_level?: number
+        }
+        Relationships: []
+      }
+      verification_requests: {
+        Row: {
+          admin_notes: string | null
+          business_reg_url: string | null
+          created_at: string
+          id: string
+          id_document_url: string | null
+          level: number
+          phone: string | null
+          selfie_url: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          business_reg_url?: string | null
+          created_at?: string
+          id?: string
+          id_document_url?: string | null
+          level?: number
+          phone?: string | null
+          selfie_url?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          business_reg_url?: string | null
+          created_at?: string
+          id?: string
+          id_document_url?: string | null
+          level?: number
+          phone?: string | null
+          selfie_url?: string | null
+          status?: string
           updated_at?: string
           user_id?: string
         }
