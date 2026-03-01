@@ -13,6 +13,7 @@ export interface Profile {
   latitude: number | null;
   longitude: number | null;
   response_time_minutes: number | null;
+  verification_level: number;
   created_at: string;
   updated_at: string;
 }
