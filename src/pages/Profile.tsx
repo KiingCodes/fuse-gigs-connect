@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
 import { Camera } from "lucide-react";
+import VerificationForm from "@/components/VerificationForm";
 
 const Profile = () => {
   const { user } = useAuth();
@@ -130,6 +131,9 @@ const Profile = () => {
             </form>
           </CardContent>
         </Card>
+
+        {/* Verification */}
+        <VerificationForm currentLevel={profile?.verification_level ?? 0} />
       </div>
     </div>
   );
