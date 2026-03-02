@@ -5,7 +5,7 @@ import SEO from "@/components/SEO";
 import HustleCard from "@/components/HustleCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Eye, MessageSquare, Briefcase, TrendingUp, Plus, Pencil, Trash2 } from "lucide-react";
+import { Eye, MessageSquare, Briefcase, TrendingUp, Plus, Pencil, Trash2, Rocket } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import {
@@ -97,6 +97,19 @@ const Dashboard = () => {
                 <div key={hustle.id} className="relative group">
                   <HustleCard hustle={hustle} />
                   <div className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                    <Button
+                      size="icon"
+                      variant="secondary"
+                      className="h-8 w-8 bg-background/90 backdrop-blur-sm shadow-md"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        navigate(`/boost/${hustle.id}`);
+                      }}
+                      title="Boost this hustle"
+                    >
+                      <Rocket className="h-4 w-4" />
+                    </Button>
                     <Button
                       size="icon"
                       variant="secondary"

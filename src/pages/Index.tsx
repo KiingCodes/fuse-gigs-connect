@@ -1,4 +1,5 @@
 import { useHustles, useFeaturedHustles, useCategories } from "@/hooks/useData";
+import { useActiveBoostedHustleIds } from "@/hooks/useBoosts";
 import { useAuth } from "@/contexts/AuthContext";
 import Navbar from "@/components/Navbar";
 import SEO from "@/components/SEO";
@@ -19,6 +20,14 @@ const Index = () => {
   const { data: featuredHustles, isLoading: featuredLoading } = useFeaturedHustles();
   const { data: hustles, isLoading } = useHustles(selectedCategory, search);
   const { data: categories } = useCategories();
+  const { data: boostedIds } = useActiveBoostedHustleIds();
+
+  // Sort hustles: boosted first
+  const sortedHustles = hustles ? [...hustles].sort((a, b) => {
+    const aB = boostedIds?.has(a.id) ? 1 : 0;
+    const bB = boostedIds?.has(b.id) ? 1 : 0;
+    return bB - aB;
+  }) : [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -105,7 +114,7 @@ const Index = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4 }}
                 >
-                  <HustleCard hustle={hustle} featured />
+                  <HustleCard hustle={hustle} featured isBoosted={boostedIds?.has(hustle.id)} />
                 </motion.div>
               ))}
             </div>
@@ -151,16 +160,16 @@ const Index = () => {
                 <div key={i} className="aspect-[4/3] animate-pulse rounded-lg bg-muted" />
               ))}
             </div>
-          ) : hustles && hustles.length > 0 ? (
+          ) : sortedHustles.length > 0 ? (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {hustles.map((hustle) => (
+              {sortedHustles.map((hustle) => (
                 <motion.div
                   key={hustle.id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <HustleCard hustle={hustle} />
+                  <HustleCard hustle={hustle} isBoosted={boostedIds?.has(hustle.id)} />
                 </motion.div>
               ))}
             </div>

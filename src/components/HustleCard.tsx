@@ -2,16 +2,17 @@ import { useState } from "react";
 import { HustleWithDetails } from "@/hooks/useData";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Star, Navigation, ChevronLeft, ChevronRight } from "lucide-react";
+import { MapPin, Star, Navigation, ChevronLeft, ChevronRight, Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
 import VerificationBadge from "@/components/VerificationBadge";
 
 interface HustleCardProps {
   hustle: HustleWithDetails;
   featured?: boolean;
+  isBoosted?: boolean;
 }
 
-const HustleCard = ({ hustle, featured }: HustleCardProps) => {
+const HustleCard = ({ hustle, featured, isBoosted }: HustleCardProps) => {
   const [currentIdx, setCurrentIdx] = useState(0);
   const media = hustle.hustle_media?.sort((a, b) => a.display_order - b.display_order) || [];
   const profileData = hustle.profiles as any;
@@ -30,7 +31,7 @@ const HustleCard = ({ hustle, featured }: HustleCardProps) => {
 
   return (
     <Link to={`/hustle/${hustle.id}`}>
-      <Card className={`group overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-elevated ${featured ? "shadow-premium ring-1 ring-premium/30" : "shadow-card"}`}>
+      <Card className={`group overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-elevated ${featured ? "shadow-premium ring-1 ring-premium/30" : isBoosted ? "shadow-card ring-1 ring-primary/20" : "shadow-card"}`}>
         <div className="relative aspect-[4/3] overflow-hidden bg-muted">
           {media.length > 0 ? (
             <>
@@ -70,6 +71,11 @@ const HustleCard = ({ hustle, featured }: HustleCardProps) => {
             </div>
           )}
           <div className="absolute top-3 right-3 flex gap-1">
+            {isBoosted && (
+              <Badge className="bg-primary text-primary-foreground border-0 text-xs gap-1">
+                <Rocket className="h-3 w-3" /> Boosted
+              </Badge>
+            )}
             {hustle.is_available_now && (
               <Badge className="bg-success text-success-foreground border-0 text-xs">
                 Available Now

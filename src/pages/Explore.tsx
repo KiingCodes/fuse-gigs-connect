@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useHustles, useCategories, HustleWithDetails } from "@/hooks/useData";
+import { useActiveBoostedHustleIds } from "@/hooks/useBoosts";
 import { useGeolocation, getDistanceKm } from "@/hooks/useGeolocation";
 import Navbar from "@/components/Navbar";
 import SEO from "@/components/SEO";
@@ -67,6 +68,7 @@ const Explore = () => {
 
   const { data: hustles, isLoading } = useHustles(selectedCategory, search);
   const { data: categories } = useCategories();
+  const { data: boostedIds } = useActiveBoostedHustleIds();
   const { location: userLocation, loading: geoLoading, requestLocation, setLocation } = useGeolocation();
 
   const filteredSuburbs = SOUTH_AFRICAN_SUBURBS.filter((s) =>
@@ -130,8 +132,16 @@ const Explore = () => {
         break;
     }
 
+    // Sort boosted first, then by selected sort
+    results.sort((a, b) => {
+      const aB = boostedIds?.has(a.id) ? 1 : 0;
+      const bB = boostedIds?.has(b.id) ? 1 : 0;
+      if (aB !== bB) return bB - aB;
+      return 0;
+    });
+
     return results;
-  }, [hustles, userLocation, availableOnly, distanceFilter, sortBy]);
+  }, [hustles, userLocation, availableOnly, distanceFilter, sortBy, boostedIds]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -291,7 +301,7 @@ const Explore = () => {
             <div className="max-h-[600px] overflow-y-auto space-y-4 pr-1">
               {processedHustles.length > 0 ? (
                 processedHustles.map((hustle) => (
-                  <HustleCard key={hustle.id} hustle={hustle} />
+                  <HustleCard key={hustle.id} hustle={hustle} isBoosted={boostedIds?.has(hustle.id)} />
                 ))
               ) : (
                 <p className="py-10 text-center text-muted-foreground">No hustles found in this area.</p>
@@ -307,7 +317,7 @@ const Explore = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <HustleCard hustle={hustle} />
+                <HustleCard hustle={hustle} isBoosted={boostedIds?.has(hustle.id)} />
               </motion.div>
             ))}
           </div>
