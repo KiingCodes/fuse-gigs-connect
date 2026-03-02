@@ -14,6 +14,81 @@ export type Database = {
   }
   public: {
     Tables: {
+      boost_analytics: {
+        Row: {
+          boost_id: string
+          created_at: string
+          event_type: string
+          hustle_id: string
+          id: string
+          viewer_id: string | null
+        }
+        Insert: {
+          boost_id: string
+          created_at?: string
+          event_type: string
+          hustle_id: string
+          id?: string
+          viewer_id?: string | null
+        }
+        Update: {
+          boost_id?: string
+          created_at?: string
+          event_type?: string
+          hustle_id?: string
+          id?: string
+          viewer_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "boost_analytics_boost_id_fkey"
+            columns: ["boost_id"]
+            isOneToOne: false
+            referencedRelation: "hustle_boosts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "boost_analytics_hustle_id_fkey"
+            columns: ["hustle_id"]
+            isOneToOne: false
+            referencedRelation: "hustles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      boost_packages: {
+        Row: {
+          created_at: string
+          currency: string
+          description: string | null
+          duration_days: number
+          id: string
+          is_active: boolean
+          name: string
+          price_cents: number
+        }
+        Insert: {
+          created_at?: string
+          currency?: string
+          description?: string | null
+          duration_days: number
+          id?: string
+          is_active?: boolean
+          name: string
+          price_cents: number
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          description?: string | null
+          duration_days?: number
+          id?: string
+          is_active?: boolean
+          name?: string
+          price_cents?: number
+        }
+        Relationships: []
+      }
       conversations: {
         Row: {
           created_at: string
@@ -45,6 +120,69 @@ export type Database = {
             columns: ["hustle_id"]
             isOneToOne: false
             referencedRelation: "hustles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hustle_boosts: {
+        Row: {
+          amount_cents: number
+          created_at: string
+          currency: string
+          ends_at: string | null
+          hustle_id: string
+          id: string
+          package_id: string
+          starts_at: string | null
+          status: string
+          stripe_checkout_session_id: string | null
+          stripe_payment_intent_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_cents: number
+          created_at?: string
+          currency?: string
+          ends_at?: string | null
+          hustle_id: string
+          id?: string
+          package_id: string
+          starts_at?: string | null
+          status?: string
+          stripe_checkout_session_id?: string | null
+          stripe_payment_intent_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_cents?: number
+          created_at?: string
+          currency?: string
+          ends_at?: string | null
+          hustle_id?: string
+          id?: string
+          package_id?: string
+          starts_at?: string | null
+          status?: string
+          stripe_checkout_session_id?: string | null
+          stripe_payment_intent_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hustle_boosts_hustle_id_fkey"
+            columns: ["hustle_id"]
+            isOneToOne: false
+            referencedRelation: "hustles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hustle_boosts_package_id_fkey"
+            columns: ["package_id"]
+            isOneToOne: false
+            referencedRelation: "boost_packages"
             referencedColumns: ["id"]
           },
         ]
