@@ -116,7 +116,7 @@ const Dashboard = () => {
               {myHustles.map((hustle) => (
                 <div key={hustle.id} className="relative group">
                   <HustleCard hustle={hustle} />
-                  <div className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                  <div className="absolute top-3 right-3 z-10 flex gap-1 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100">
                     <Button
                       size="icon"
                       variant="secondary"
