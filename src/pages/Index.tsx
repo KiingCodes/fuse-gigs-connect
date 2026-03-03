@@ -5,9 +5,10 @@ import Navbar from "@/components/Navbar";
 import SEO from "@/components/SEO";
 import HustleCard from "@/components/HustleCard";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, Zap, ArrowRight, Users, Briefcase, TrendingUp } from "lucide-react";
+import { Search, Zap, ArrowRight, Users, Briefcase, TrendingUp, Rocket } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -185,6 +186,32 @@ const Index = () => {
           )}
         </div>
       </section>
+
+      {/* Boost CTA */}
+      {user && (
+        <section className="bg-muted/50 py-12">
+          <div className="container mx-auto px-4">
+            <Card className="overflow-hidden border-0 gradient-primary shadow-elevated">
+              <CardContent className="flex flex-col items-center gap-4 p-8 sm:flex-row sm:justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="rounded-xl bg-primary-foreground/20 p-3">
+                    <Rocket className="h-8 w-8 text-primary-foreground" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-primary-foreground">🚀 Boost Your Hustle</h3>
+                    <p className="text-sm text-primary-foreground/80">Get more views and appear at the top of search results. Starting from R19.</p>
+                  </div>
+                </div>
+                <Link to="/boost">
+                  <Button variant="secondary" size="lg" className="font-semibold gap-1 whitespace-nowrap">
+                    <TrendingUp className="h-4 w-4" /> Boost Now
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+      )}
 
       {/* CTA */}
       {!user && (
