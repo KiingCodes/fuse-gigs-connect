@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, Zap, ArrowRight, Users, Briefcase, TrendingUp, Rocket } from "lucide-react";
+import { Search, Zap, ArrowRight, Users, Briefcase, TrendingUp, Rocket, GraduationCap, CalendarDays } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -212,6 +212,52 @@ const Index = () => {
           </div>
         </section>
       )}
+
+      {/* Academy CTA */}
+      <section className="py-12">
+        <div className="container mx-auto px-4">
+          <div className="grid gap-6 sm:grid-cols-2">
+            <Card className="overflow-hidden border-0 bg-gradient-to-br from-violet-600 to-indigo-700 shadow-elevated">
+              <CardContent className="flex flex-col items-center gap-4 p-8 sm:flex-row sm:justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="rounded-xl bg-white/20 p-3">
+                    <GraduationCap className="h-8 w-8 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-white">Hustler Academy 🎓</h3>
+                    <p className="text-sm text-white/80">Free lessons on business, marketing & money</p>
+                  </div>
+                </div>
+                <Link to="/academy">
+                  <Button variant="secondary" size="lg" className="font-semibold gap-1 whitespace-nowrap">
+                    Start Learning
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+            {user && (
+              <Card className="overflow-hidden border-0 bg-gradient-to-br from-emerald-600 to-teal-700 shadow-elevated">
+                <CardContent className="flex flex-col items-center gap-4 p-8 sm:flex-row sm:justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="rounded-xl bg-white/20 p-3">
+                      <CalendarDays className="h-8 w-8 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-white">Smart Bookings 📅</h3>
+                      <p className="text-sm text-white/80">Manage your schedule like a pro</p>
+                    </div>
+                  </div>
+                  <Link to="/bookings">
+                    <Button variant="secondary" size="lg" className="font-semibold gap-1 whitespace-nowrap">
+                      View Calendar
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </div>
+      </section>
 
       {/* CTA */}
       {!user && (
