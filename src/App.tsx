@@ -17,6 +17,8 @@ import Conversations from "./pages/Conversations";
 import Chat from "./pages/Chat";
 import AdminPanel from "./pages/AdminPanel";
 import BoostHustle from "./pages/BoostHustle";
+import Academy from "./pages/Academy";
+import Bookings from "./pages/Bookings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -43,6 +45,8 @@ const App = () => (
               <Route path="/admin" element={<AdminPanel />} />
               <Route path="/boost" element={<BoostHustle />} />
               <Route path="/boost/:hustleId" element={<BoostHustle />} />
+              <Route path="/academy" element={<Academy />} />
+              <Route path="/bookings" element={<Bookings />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

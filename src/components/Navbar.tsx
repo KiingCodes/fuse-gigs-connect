@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Plus, LayoutDashboard, User, LogOut, Menu, X, MessageSquare, Shield } from "lucide-react";
+import { Plus, LayoutDashboard, User, LogOut, Menu, X, MessageSquare, Shield, GraduationCap, CalendarDays } from "lucide-react";
 import { useState } from "react";
 import logo from "@/assets/logo.png";
 import NotificationBell from "@/components/NotificationBell";
@@ -32,11 +32,19 @@ const Navbar = () => {
           <Link to="/explore">
             <Button variant="ghost" size="sm">Explore</Button>
           </Link>
+          <Link to="/academy">
+            <Button variant="ghost" size="sm" className="gap-1"><GraduationCap className="h-4 w-4" /> Academy</Button>
+          </Link>
           {user ? (
             <>
               <Link to="/create">
                 <Button size="sm" className="gradient-primary text-primary-foreground gap-1">
                   <Plus className="h-4 w-4" /> Post Hustle
+                </Button>
+              </Link>
+              <Link to="/bookings">
+                <Button variant="ghost" size="icon" className="rounded-full" title="Bookings">
+                  <CalendarDays className="h-5 w-5" />
                 </Button>
               </Link>
               <Link to="/messages">
@@ -94,11 +102,21 @@ const Navbar = () => {
             <Link to="/explore" onClick={() => setMobileOpen(false)}>
               <Button variant="ghost" className="w-full justify-start">Explore</Button>
             </Link>
+            <Link to="/academy" onClick={() => setMobileOpen(false)}>
+              <Button variant="ghost" className="w-full justify-start">
+                <GraduationCap className="mr-2 h-4 w-4" /> Academy
+              </Button>
+            </Link>
             {user ? (
               <>
                 <Link to="/create" onClick={() => setMobileOpen(false)}>
                   <Button className="w-full gradient-primary text-primary-foreground gap-1">
                     <Plus className="h-4 w-4" /> Post Hustle
+                  </Button>
+                </Link>
+                <Link to="/bookings" onClick={() => setMobileOpen(false)}>
+                  <Button variant="ghost" className="w-full justify-start">
+                    <CalendarDays className="mr-2 h-4 w-4" /> Bookings
                   </Button>
                 </Link>
                 <Link to="/messages" onClick={() => setMobileOpen(false)}>
