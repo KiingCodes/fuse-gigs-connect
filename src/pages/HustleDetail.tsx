@@ -7,11 +7,13 @@ import { useStartConversation } from "@/hooks/useChat";
 import Navbar from "@/components/Navbar";
 import SEO from "@/components/SEO";
 import VerificationBadge from "@/components/VerificationBadge";
+import HustleMap from "@/components/HustleMap";
+import BookingModal from "@/components/BookingModal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MapPin, Star, MessageSquare, ArrowLeft, ChevronLeft, ChevronRight, Pencil, Trash2, Phone, Mail, Globe } from "lucide-react";
+import { MapPin, Star, MessageSquare, ArrowLeft, ChevronLeft, ChevronRight, Pencil, Trash2, Phone, Mail, Globe, CalendarDays } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import {
@@ -27,6 +29,7 @@ const HustleDetail = () => {
   const deleteHustle = useDeleteHustle();
   const startConversation = useStartConversation();
   const [currentMedia, setCurrentMedia] = useState(0);
+  const [bookingOpen, setBookingOpen] = useState(false);
 
   const { data: hustle, isLoading } = useQuery({
     queryKey: ["hustle", id],
@@ -220,6 +223,18 @@ const HustleDetail = () => {
                   )}
                 </div>
               )}
+
+              {/* Map */}
+              {hustle.latitude && hustle.longitude && (
+                <div className="mt-6">
+                  <h3 className="mb-2 font-semibold text-foreground text-sm">Location</h3>
+                  <HustleMap
+                    hustles={[hustle]}
+                    userLocation={null}
+                    className="h-[250px]"
+                  />
+                </div>
+              )}
             </div>
           </div>
 
@@ -240,9 +255,14 @@ const HustleDetail = () => {
                 )}
 
                 {user && user.id !== hustle.user_id && (
-                  <Button onClick={handleStartChat} className="w-full gradient-primary text-primary-foreground gap-2" disabled={startConversation.isPending}>
-                    <MessageSquare className="h-4 w-4" /> {startConversation.isPending ? "Starting..." : "Chat with Hustler"}
-                  </Button>
+                  <div className="space-y-2">
+                    <Button onClick={handleStartChat} className="w-full gradient-primary text-primary-foreground gap-2" disabled={startConversation.isPending}>
+                      <MessageSquare className="h-4 w-4" /> {startConversation.isPending ? "Starting..." : "Chat with Hustler"}
+                    </Button>
+                    <Button onClick={() => setBookingOpen(true)} variant="outline" className="w-full gap-2">
+                      <CalendarDays className="h-4 w-4" /> Book Now
+                    </Button>
+                  </div>
                 )}
 
                 {!user && (
@@ -282,6 +302,18 @@ const HustleDetail = () => {
             </Card>
           </div>
         </div>
+
+        {/* Booking Modal */}
+        {user && hustle && user.id !== hustle.user_id && (
+          <BookingModal
+            open={bookingOpen}
+            onClose={() => setBookingOpen(false)}
+            hustleId={hustle.id}
+            hustlerId={hustle.user_id}
+            hustleTitle={hustle.title}
+            hustlePrice={hustle.price}
+          />
+        )}
       </div>
     </div>
   );
