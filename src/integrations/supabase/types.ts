@@ -14,6 +14,65 @@ export type Database = {
   }
   public: {
     Tables: {
+      bookings: {
+        Row: {
+          booking_date: string
+          created_at: string
+          customer_id: string
+          customer_name: string | null
+          customer_phone: string | null
+          end_time: string | null
+          hustle_id: string
+          hustler_id: string
+          id: string
+          notes: string | null
+          start_time: string
+          status: string
+          total_price: number | null
+          updated_at: string
+        }
+        Insert: {
+          booking_date: string
+          created_at?: string
+          customer_id: string
+          customer_name?: string | null
+          customer_phone?: string | null
+          end_time?: string | null
+          hustle_id: string
+          hustler_id: string
+          id?: string
+          notes?: string | null
+          start_time: string
+          status?: string
+          total_price?: number | null
+          updated_at?: string
+        }
+        Update: {
+          booking_date?: string
+          created_at?: string
+          customer_id?: string
+          customer_name?: string | null
+          customer_phone?: string | null
+          end_time?: string | null
+          hustle_id?: string
+          hustler_id?: string
+          id?: string
+          notes?: string | null
+          start_time?: string
+          status?: string
+          total_price?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_hustle_id_fkey"
+            columns: ["hustle_id"]
+            isOneToOne: false
+            referencedRelation: "hustles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       boost_analytics: {
         Row: {
           boost_id: string
