@@ -21,6 +21,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import type { HustleWithDetails } from "@/hooks/useData";
+import ReviewSection from "@/components/ReviewSection";
 
 const HustleDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -235,6 +236,9 @@ const HustleDetail = () => {
                   />
                 </div>
               )}
+
+              {/* Reviews */}
+              <ReviewSection hustleId={hustle.id} hustleOwnerId={hustle.user_id} />
             </div>
           </div>
 

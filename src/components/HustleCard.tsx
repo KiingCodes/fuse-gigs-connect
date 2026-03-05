@@ -31,7 +31,13 @@ const HustleCard = ({ hustle, featured, isBoosted }: HustleCardProps) => {
 
   return (
     <Link to={`/hustle/${hustle.id}`}>
-      <Card className={`group overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-elevated ${featured ? "shadow-premium ring-1 ring-premium/30" : isBoosted ? "shadow-card ring-1 ring-primary/20" : "shadow-card"}`}>
+      <Card className={`group overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-elevated ${
+        featured
+          ? "shadow-premium ring-2 ring-premium/40"
+          : isBoosted
+          ? "shadow-lg ring-2 ring-primary/40 bg-gradient-to-br from-primary/5 to-transparent relative before:absolute before:inset-0 before:rounded-lg before:border-2 before:border-primary/20 before:pointer-events-none"
+          : "shadow-card"
+      }`}>
         <div className="relative aspect-[4/3] overflow-hidden bg-muted">
           {media.length > 0 ? (
             <>
@@ -48,7 +54,6 @@ const HustleCard = ({ hustle, featured, isBoosted }: HustleCardProps) => {
                   <button onClick={nextMedia} className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-full bg-background/70 p-1 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity" aria-label="Next">
                     <ChevronRight className="h-4 w-4" />
                   </button>
-                  {/* Dots */}
                   <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
                     {media.slice(0, 5).map((_, i) => (
                       <span key={i} className={`h-1.5 w-1.5 rounded-full transition-colors ${i === currentIdx ? "bg-primary-foreground" : "bg-primary-foreground/40"}`} />
@@ -72,7 +77,7 @@ const HustleCard = ({ hustle, featured, isBoosted }: HustleCardProps) => {
           )}
           <div className="absolute top-3 right-3 flex gap-1">
             {isBoosted && (
-              <Badge className="bg-primary text-primary-foreground border-0 text-xs gap-1">
+              <Badge className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground border-0 text-xs gap-1 shadow-lg animate-pulse">
                 <Rocket className="h-3 w-3" /> Boosted
               </Badge>
             )}
@@ -90,11 +95,16 @@ const HustleCard = ({ hustle, featured, isBoosted }: HustleCardProps) => {
             </div>
           )}
         </div>
-        <CardContent className="p-4">
+        <CardContent className={`p-4 ${isBoosted ? "border-t-2 border-primary/20" : ""}`}>
           <div className="mb-2 flex items-center gap-2">
             {categoryData && (
               <Badge variant="outline" className="text-xs">
                 {categoryData.name}
+              </Badge>
+            )}
+            {isBoosted && (
+              <Badge variant="outline" className="text-xs border-primary/30 text-primary gap-1">
+                <Rocket className="h-3 w-3" /> Promoted
               </Badge>
             )}
           </div>

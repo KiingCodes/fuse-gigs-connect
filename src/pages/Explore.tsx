@@ -95,13 +95,29 @@ const Explore = () => {
     if (!hustles) return [];
 
     let results: HustleWithDetails[] = hustles.map((h) => {
-      if (userLocation && h.latitude && h.longitude) {
+      // If hustle has no lat/lng but has a location string, try to match to suburb coords
+      let lat = h.latitude;
+      let lng = h.longitude;
+      if (!lat && !lng && h.location) {
+        const locLower = h.location.toLowerCase();
+        for (const [suburb, coords] of Object.entries(SUBURB_COORDS)) {
+          if (locLower.includes(suburb.toLowerCase())) {
+            lat = coords.lat;
+            lng = coords.lng;
+            break;
+          }
+        }
+      }
+
+      if (userLocation && lat && lng) {
         return {
           ...h,
-          distance: getDistanceKm(userLocation.lat, userLocation.lng, h.latitude, h.longitude),
+          latitude: lat,
+          longitude: lng,
+          distance: getDistanceKm(userLocation.lat, userLocation.lng, lat, lng),
         };
       }
-      return { ...h, distance: undefined };
+      return { ...h, latitude: lat ?? h.latitude, longitude: lng ?? h.longitude, distance: undefined };
     });
 
     // Available now filter
