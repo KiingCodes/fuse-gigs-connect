@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Plus, LayoutDashboard, User, LogOut, Menu, X, MessageSquare, Shield, GraduationCap, CalendarDays } from "lucide-react";
+import { Plus, LayoutDashboard, User, LogOut, Menu, X, MessageSquare, Shield, GraduationCap, CalendarDays, Heart } from "lucide-react";
 import { useState } from "react";
 import logo from "@/assets/logo.png";
 import NotificationBell from "@/components/NotificationBell";
@@ -40,6 +40,11 @@ const Navbar = () => {
               <Link to="/create">
                 <Button size="sm" className="gradient-primary text-primary-foreground gap-1">
                   <Plus className="h-4 w-4" /> Post Hustle
+                </Button>
+              </Link>
+              <Link to="/saved">
+                <Button variant="ghost" size="icon" className="rounded-full" title="Saved">
+                  <Heart className="h-5 w-5" />
                 </Button>
               </Link>
               <Link to="/bookings">
@@ -97,7 +102,7 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {mobileOpen && (
-        <div className="border-t border-border bg-background px-4 pb-4 md:hidden">
+        <div className="border-t border-border bg-background px-4 pb-4 md:hidden animate-fade-in">
           <div className="flex flex-col gap-2 pt-2">
             <Link to="/explore" onClick={() => setMobileOpen(false)}>
               <Button variant="ghost" className="w-full justify-start">Explore</Button>
@@ -112,6 +117,11 @@ const Navbar = () => {
                 <Link to="/create" onClick={() => setMobileOpen(false)}>
                   <Button className="w-full gradient-primary text-primary-foreground gap-1">
                     <Plus className="h-4 w-4" /> Post Hustle
+                  </Button>
+                </Link>
+                <Link to="/saved" onClick={() => setMobileOpen(false)}>
+                  <Button variant="ghost" className="w-full justify-start">
+                    <Heart className="mr-2 h-4 w-4" /> Saved
                   </Button>
                 </Link>
                 <Link to="/bookings" onClick={() => setMobileOpen(false)}>

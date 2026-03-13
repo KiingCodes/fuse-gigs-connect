@@ -14,8 +14,10 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import logo from "@/assets/logo.png";
+import { usePushNotifications } from "@/hooks/usePushNotifications";
 
 const Index = () => {
+  usePushNotifications();
   const { user } = useAuth();
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>();

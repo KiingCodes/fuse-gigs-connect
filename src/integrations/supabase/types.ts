@@ -604,6 +604,35 @@ export type Database = {
           },
         ]
       }
+      saved_hustles: {
+        Row: {
+          created_at: string
+          hustle_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          hustle_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          hustle_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saved_hustles_hustle_id_fkey"
+            columns: ["hustle_id"]
+            isOneToOne: false
+            referencedRelation: "hustles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           id: string
