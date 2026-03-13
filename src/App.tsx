@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { HelmetProvider } from "react-helmet-async";
+import CookieConsent from "@/components/CookieConsent";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
@@ -19,6 +20,7 @@ import AdminPanel from "./pages/AdminPanel";
 import BoostHustle from "./pages/BoostHustle";
 import Academy from "./pages/Academy";
 import Bookings from "./pages/Bookings";
+import SavedHustles from "./pages/SavedHustles";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +32,7 @@ const App = () => (
         <TooltipProvider>
           <Toaster />
           <Sonner />
+          <CookieConsent />
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
@@ -47,6 +50,7 @@ const App = () => (
               <Route path="/boost/:hustleId" element={<BoostHustle />} />
               <Route path="/academy" element={<Academy />} />
               <Route path="/bookings" element={<Bookings />} />
+              <Route path="/saved" element={<SavedHustles />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
