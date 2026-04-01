@@ -274,7 +274,7 @@ export const useUpdateHustle = () => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
   return useMutation({
-    mutationFn: async (hustle: { id: string; title: string; description: string; category_id: string; price: number | null; price_type: string; location: string; latitude?: number | null; longitude?: number | null; is_available_now?: boolean; contact_phone?: string; contact_email?: string; website_url?: string }) => {
+    mutationFn: async (hustle: { id: string; title: string; description: string; category_id: string; price: number | null; price_type: string; location: string; latitude?: number | null; longitude?: number | null; is_available_now?: boolean; contact_phone?: string; contact_email?: string; website_url?: string; logo_url?: string | null }) => {
       if (!user) throw new Error("Not authenticated");
       const { id, ...updates } = hustle;
       const { data, error } = await supabase
