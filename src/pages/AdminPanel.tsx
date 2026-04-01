@@ -168,9 +168,37 @@ const AdminPanel = () => {
                             <div className="flex items-center gap-2 text-sm font-medium"><LevelIcon className="h-4 w-4 text-primary" /> Level {req.level} — {levelCfg.label}</div>
                             <div className="grid gap-2 text-sm rounded-lg border p-3 bg-muted/30">
                               {req.phone && <div className="flex items-center gap-2"><Phone className="h-3.5 w-3.5 text-muted-foreground" /><span className="text-muted-foreground">Phone:</span><span>{req.phone}</span></div>}
-                              {req.id_document_url && <div className="flex items-center gap-2"><FileText className="h-3.5 w-3.5 text-muted-foreground" /><span className="text-muted-foreground">ID Document:</span><span className="text-primary">Uploaded ✓</span></div>}
-                              {req.selfie_url && <div className="flex items-center gap-2"><Camera className="h-3.5 w-3.5 text-muted-foreground" /><span className="text-muted-foreground">Selfie:</span><span className="text-primary">Uploaded ✓</span></div>}
-                              {req.business_reg_url && <div className="flex items-center gap-2"><Briefcase className="h-3.5 w-3.5 text-muted-foreground" /><span className="text-muted-foreground">Business Reg:</span><span className="text-primary">Uploaded ✓</span></div>}
+                              {req.id_document_url && (
+                                <div className="space-y-2">
+                                  <div className="flex items-center gap-2"><FileText className="h-3.5 w-3.5 text-muted-foreground" /><span className="text-muted-foreground">ID Document:</span></div>
+                                  <a href={req.id_document_url} target="_blank" rel="noopener noreferrer" className="block">
+                                    <img src={req.id_document_url} alt="ID Document" className="max-h-48 w-auto rounded-lg border border-border object-contain bg-background cursor-pointer hover:opacity-80 transition-opacity" />
+                                  </a>
+                                </div>
+                              )}
+                              {req.selfie_url && (
+                                <div className="space-y-2">
+                                  <div className="flex items-center gap-2"><Camera className="h-3.5 w-3.5 text-muted-foreground" /><span className="text-muted-foreground">Selfie:</span></div>
+                                  <a href={req.selfie_url} target="_blank" rel="noopener noreferrer" className="block">
+                                    <img src={req.selfie_url} alt="Selfie" className="max-h-48 w-auto rounded-lg border border-border object-contain bg-background cursor-pointer hover:opacity-80 transition-opacity" />
+                                  </a>
+                                </div>
+                              )}
+                              {req.business_reg_url && (
+                                <div className="space-y-2">
+                                  <div className="flex items-center gap-2"><Briefcase className="h-3.5 w-3.5 text-muted-foreground" /><span className="text-muted-foreground">Business Reg:</span></div>
+                                  <a href={req.business_reg_url} target="_blank" rel="noopener noreferrer" className="block">
+                                    {req.business_reg_url.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? (
+                                      <img src={req.business_reg_url} alt="Business Registration" className="max-h-48 w-auto rounded-lg border border-border object-contain bg-background cursor-pointer hover:opacity-80 transition-opacity" />
+                                    ) : (
+                                      <div className="flex items-center gap-2 rounded-lg border border-border px-4 py-3 bg-background hover:bg-accent transition-colors cursor-pointer">
+                                        <FileText className="h-5 w-5 text-primary" />
+                                        <span className="text-sm text-primary font-medium">View Document ↗</span>
+                                      </div>
+                                    )}
+                                  </a>
+                                </div>
+                              )}
                               {req.profiles && <div className="flex items-center gap-2"><Shield className="h-3.5 w-3.5 text-muted-foreground" /><span className="text-muted-foreground">Current Level:</span><span>{req.profiles.verification_level}</span></div>}
                             </div>
                             {req.admin_notes && <div className="text-sm rounded-lg border p-3 bg-muted/30"><span className="font-medium">Admin Notes: </span>{req.admin_notes}</div>}

@@ -36,6 +36,9 @@ const CreateHustle = () => {
   const [isAvailableNow, setIsAvailableNow] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const logoInputRef = useRef<HTMLInputElement>(null);
   const [submitting, setSubmitting] = useState(false);
 
   if (!user) {
