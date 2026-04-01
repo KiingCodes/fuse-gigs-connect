@@ -210,51 +210,51 @@ const HustleDetail = () => {
 
         <div className="grid gap-8 lg:grid-cols-3">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="lg:col-span-2 space-y-6">
-            {/* Premium Gallery */}
+            {/* Gallery Grid */}
             {media.length > 0 && (
-              <div className="space-y-3">
-                <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-muted cursor-pointer group" onClick={() => setGalleryOpen(true)}>
-                  {media[currentMedia]?.media_type === "video" ? (
-                    <video src={media[currentMedia].media_url} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" controls />
-                  ) : (
-                    <img src={media[currentMedia]?.media_url} alt={hustle.title} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  {media.length > 1 && (
-                    <>
-                      <button onClick={(e) => { e.stopPropagation(); setCurrentMedia((p) => (p > 0 ? p - 1 : media.length - 1)); }} className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2.5 backdrop-blur-md hover:bg-background transition-all shadow-lg opacity-0 group-hover:opacity-100">
-                        <ChevronLeft className="h-5 w-5" />
-                      </button>
-                      <button onClick={(e) => { e.stopPropagation(); setCurrentMedia((p) => (p < media.length - 1 ? p + 1 : 0)); }} className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2.5 backdrop-blur-md hover:bg-background transition-all shadow-lg opacity-0 group-hover:opacity-100">
-                        <ChevronRight className="h-5 w-5" />
-                      </button>
-                    </>
-                  )}
-                  {hustle.is_featured && (
-                    <Badge className="absolute left-4 top-4 gradient-premium text-premium-foreground border-0 gap-1 shadow-lg">
-                      <Star className="h-3 w-3" /> Featured
-                    </Badge>
-                  )}
-                  <div className="absolute bottom-4 right-4 bg-background/80 backdrop-blur-md rounded-lg px-3 py-1.5 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-                    {currentMedia + 1} / {media.length} — Click to expand
+              <div className="space-y-2">
+                {media.length === 1 ? (
+                  <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-muted cursor-pointer group" onClick={() => { setCurrentMedia(0); setGalleryOpen(true); }}>
+                    <img src={media[0].media_url} alt={hustle.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
                   </div>
-                </div>
-                {media.length > 1 && (
-                  <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-                    {media.map((m, i) => (
-                      <motion.button
-                        key={m.id}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => setCurrentMedia(i)}
-                        className={`flex-shrink-0 h-20 w-20 rounded-xl overflow-hidden transition-all duration-300 ${i === currentMedia ? "ring-2 ring-primary ring-offset-2 ring-offset-background shadow-lg" : "opacity-60 hover:opacity-100"}`}
-                      >
-                        {m.media_type === "video" ? (
-                          <video src={m.media_url} className="h-full w-full object-cover" />
-                        ) : (
-                          <img src={m.media_url} alt="" className="h-full w-full object-cover" loading="lazy" />
+                ) : media.length === 2 ? (
+                  <div className="grid grid-cols-2 gap-2 h-[340px]">
+                    {media.slice(0, 2).map((m, i) => (
+                      <div key={m.id} className="relative overflow-hidden rounded-2xl bg-muted cursor-pointer group" onClick={() => { setCurrentMedia(i); setGalleryOpen(true); }}>
+                        <img src={m.media_url} alt="" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+                      </div>
+                    ))}
+                  </div>
+                ) : media.length === 3 ? (
+                  <div className="grid grid-cols-2 gap-2 h-[360px]">
+                    <div className="relative overflow-hidden rounded-2xl bg-muted cursor-pointer group row-span-2" onClick={() => { setCurrentMedia(0); setGalleryOpen(true); }}>
+                      <img src={media[0].media_url} alt="" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+                    </div>
+                    {media.slice(1, 3).map((m, i) => (
+                      <div key={m.id} className="relative overflow-hidden rounded-2xl bg-muted cursor-pointer group" onClick={() => { setCurrentMedia(i + 1); setGalleryOpen(true); }}>
+                        <img src={m.media_url} alt="" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-4 gap-2 h-[360px]">
+                    <div className="relative overflow-hidden rounded-2xl bg-muted cursor-pointer group col-span-2 row-span-2" onClick={() => { setCurrentMedia(0); setGalleryOpen(true); }}>
+                      <img src={media[0].media_url} alt="" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+                      {hustle.is_featured && (
+                        <Badge className="absolute left-3 top-3 bg-[hsl(45,93%,47%)] text-black border-0 gap-1 shadow-md">
+                          <Star className="h-3 w-3" /> Featured
+                        </Badge>
+                      )}
+                    </div>
+                    {media.slice(1, 5).map((m, i) => (
+                      <div key={m.id} className="relative overflow-hidden rounded-2xl bg-muted cursor-pointer group" onClick={() => { setCurrentMedia(i + 1); setGalleryOpen(true); }}>
+                        <img src={m.media_url} alt="" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+                        {i === 3 && media.length > 5 && (
+                          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                            <span className="text-white text-lg font-bold">+{media.length - 5}</span>
+                          </div>
                         )}
-                      </motion.button>
+                      </div>
                     ))}
                   </div>
                 )}
