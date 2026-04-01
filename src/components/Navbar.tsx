@@ -10,6 +10,7 @@ import { Plus, LayoutDashboard, User, LogOut, Menu, X, MessageSquare, Shield, Gr
 import { useState } from "react";
 import logo from "@/assets/logo.png";
 import NotificationBell from "@/components/NotificationBell";
+import DarkModeToggle from "@/components/DarkModeToggle";
 import { useIsAdmin } from "@/hooks/useAdmin";
 
 const Navbar = () => {
