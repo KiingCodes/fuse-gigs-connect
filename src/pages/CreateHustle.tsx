@@ -161,6 +161,30 @@ const CreateHustle = () => {
                 </div>
               </div>
 
+              {/* Business Logo */}
+              <div className="space-y-2 rounded-lg border border-border p-4">
+                <Label className="text-sm font-medium">Business Logo (optional)</Label>
+                <div className="flex items-center gap-4">
+                  {logoPreview ? (
+                    <div className="relative h-20 w-20 rounded-xl overflow-hidden border border-border">
+                      <img src={logoPreview} alt="Logo" className="h-full w-full object-cover" />
+                      <button type="button" onClick={() => { if (logoPreview) URL.revokeObjectURL(logoPreview); setLogoFile(null); setLogoPreview(null); }} className="absolute right-1 top-1 rounded-full bg-destructive p-1 text-destructive-foreground">
+                        <X className="h-3 w-3" />
+                      </button>
+                    </div>
+                  ) : (
+                    <button type="button" onClick={() => logoInputRef.current?.click()} className="flex h-20 w-20 items-center justify-center rounded-xl border-2 border-dashed border-border hover:border-primary hover:bg-accent transition-colors">
+                      <div className="text-center">
+                        <Upload className="mx-auto h-5 w-5 text-muted-foreground" />
+                        <span className="text-[10px] text-muted-foreground">Logo</span>
+                      </div>
+                    </button>
+                  )}
+                  <p className="text-xs text-muted-foreground">Upload your business logo to stand out</p>
+                </div>
+                <input ref={logoInputRef} type="file" accept="image/*" onChange={(e) => { const f = e.target.files?.[0]; if (f) { setLogoFile(f); setLogoPreview(URL.createObjectURL(f)); } }} className="hidden" />
+              </div>
+
               {/* Contact Information */}
               <div className="space-y-3 rounded-lg border border-border p-4">
                 <Label className="text-sm font-medium">Contact Information</Label>
