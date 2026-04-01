@@ -27,6 +27,7 @@ const EditHustle = () => {
   const uploadMedia = useUploadHustleMedia();
   const deleteMedia = useDeleteHustleMedia();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const logoInputRef = useRef<HTMLInputElement>(null);
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -40,6 +41,9 @@ const EditHustle = () => {
   const [newPreviews, setNewPreviews] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [initialized, setInitialized] = useState(false);
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [existingLogoUrl, setExistingLogoUrl] = useState<string | null>(null);
   const { location: geoLocation, loading: geoLoading, requestLocation, setLocation: setGeoLocation } = useGeolocation();
 
   const { data: hustle, isLoading } = useQuery({
@@ -69,6 +73,7 @@ const EditHustle = () => {
         setGeoLocation({ lat: hustle.latitude, lng: hustle.longitude });
       }
       setExistingMedia(hustle.hustle_media?.sort((a, b) => a.display_order - b.display_order) || []);
+      setExistingLogoUrl((hustle as any).logo_url || null);
       setInitialized(true);
     }
   }, [hustle, initialized]);
@@ -119,6 +124,16 @@ const EditHustle = () => {
     }
     setSubmitting(true);
     try {
+      let logoUrl = existingLogoUrl;
+      if (logoFile) {
+        const ext = logoFile.name.split(".").pop();
+        const path = `${user.id}/logo-${Date.now()}.${ext}`;
+        const { error: upErr } = await supabase.storage.from("hustle-media").upload(path, logoFile);
+        if (upErr) throw upErr;
+        const { data: urlData } = supabase.storage.from("hustle-media").getPublicUrl(path);
+        logoUrl = urlData.publicUrl;
+      }
+
       await updateHustle.mutateAsync({
         id: id!,
         title,
@@ -130,6 +145,7 @@ const EditHustle = () => {
         latitude: geoLocation?.lat ?? null,
         longitude: geoLocation?.lng ?? null,
         is_available_now: isAvailableNow,
+        logo_url: logoUrl,
       });
 
       if (newFiles.length > 0) {
@@ -169,6 +185,28 @@ const EditHustle = () => {
               <div className="space-y-2">
                 <Label htmlFor="title">Title *</Label>
                 <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} required />
+              </div>
+
+              {/* Logo Upload */}
+              <div className="space-y-2">
+                <Label>Business Logo</Label>
+                <div className="flex items-center gap-4">
+                  {(logoPreview || existingLogoUrl) && (
+                    <div className="relative h-16 w-16 rounded-lg overflow-hidden border border-border">
+                      <img src={logoPreview || existingLogoUrl!} alt="Logo" className="h-full w-full object-cover" />
+                      <button type="button" onClick={() => { setLogoFile(null); setLogoPreview(null); setExistingLogoUrl(null); }} className="absolute -right-1 -top-1 rounded-full bg-destructive p-0.5 text-destructive-foreground">
+                        <X className="h-3 w-3" />
+                      </button>
+                    </div>
+                  )}
+                  <Button type="button" variant="outline" size="sm" onClick={() => logoInputRef.current?.click()} className="gap-2">
+                    <Upload className="h-4 w-4" /> {logoPreview || existingLogoUrl ? "Change" : "Upload"} Logo
+                  </Button>
+                  <input ref={logoInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) { setLogoFile(f); setLogoPreview(URL.createObjectURL(f)); }
+                  }} />
+                </div>
               </div>
 
               <div className="space-y-2">

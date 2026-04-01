@@ -10,6 +10,7 @@ import { Plus, LayoutDashboard, User, LogOut, Menu, X, MessageSquare, Shield, Gr
 import { useState } from "react";
 import logo from "@/assets/logo.png";
 import NotificationBell from "@/components/NotificationBell";
+import DarkModeToggle from "@/components/DarkModeToggle";
 import { useIsAdmin } from "@/hooks/useAdmin";
 
 const Navbar = () => {
@@ -29,6 +30,7 @@ const Navbar = () => {
 
         {/* Desktop */}
         <div className="hidden items-center gap-2 md:flex">
+          <DarkModeToggle />
           <Link to="/explore">
             <Button variant="ghost" size="sm">Explore</Button>
           </Link>
@@ -104,6 +106,7 @@ const Navbar = () => {
       {mobileOpen && (
         <div className="border-t border-border bg-background px-4 pb-4 md:hidden animate-fade-in">
           <div className="flex flex-col gap-2 pt-2">
+            <div className="flex justify-end"><DarkModeToggle /></div>
             <Link to="/explore" onClick={() => setMobileOpen(false)}>
               <Button variant="ghost" className="w-full justify-start">Explore</Button>
             </Link>
