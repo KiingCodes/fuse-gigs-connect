@@ -187,6 +187,28 @@ const EditHustle = () => {
                 <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} required />
               </div>
 
+              {/* Logo Upload */}
+              <div className="space-y-2">
+                <Label>Business Logo</Label>
+                <div className="flex items-center gap-4">
+                  {(logoPreview || existingLogoUrl) && (
+                    <div className="relative h-16 w-16 rounded-lg overflow-hidden border border-border">
+                      <img src={logoPreview || existingLogoUrl!} alt="Logo" className="h-full w-full object-cover" />
+                      <button type="button" onClick={() => { setLogoFile(null); setLogoPreview(null); setExistingLogoUrl(null); }} className="absolute -right-1 -top-1 rounded-full bg-destructive p-0.5 text-destructive-foreground">
+                        <X className="h-3 w-3" />
+                      </button>
+                    </div>
+                  )}
+                  <Button type="button" variant="outline" size="sm" onClick={() => logoInputRef.current?.click()} className="gap-2">
+                    <Upload className="h-4 w-4" /> {logoPreview || existingLogoUrl ? "Change" : "Upload"} Logo
+                  </Button>
+                  <input ref={logoInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) { setLogoFile(f); setLogoPreview(URL.createObjectURL(f)); }
+                  }} />
+                </div>
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="description">Description *</Label>
                 <Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} rows={4} required />
