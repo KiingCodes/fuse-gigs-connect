@@ -124,6 +124,16 @@ const EditHustle = () => {
     }
     setSubmitting(true);
     try {
+      let logoUrl = existingLogoUrl;
+      if (logoFile) {
+        const ext = logoFile.name.split(".").pop();
+        const path = `${user.id}/logo-${Date.now()}.${ext}`;
+        const { error: upErr } = await supabase.storage.from("hustle-media").upload(path, logoFile);
+        if (upErr) throw upErr;
+        const { data: urlData } = supabase.storage.from("hustle-media").getPublicUrl(path);
+        logoUrl = urlData.publicUrl;
+      }
+
       await updateHustle.mutateAsync({
         id: id!,
         title,
@@ -135,6 +145,7 @@ const EditHustle = () => {
         latitude: geoLocation?.lat ?? null,
         longitude: geoLocation?.lng ?? null,
         is_available_now: isAvailableNow,
+        logo_url: logoUrl,
       });
 
       if (newFiles.length > 0) {
