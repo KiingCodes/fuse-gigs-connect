@@ -70,6 +70,17 @@ const CreateHustle = () => {
     }
     setSubmitting(true);
     try {
+      // Upload logo if provided
+      let logoUrl: string | undefined;
+      if (logoFile && user) {
+        const ext = logoFile.name.split(".").pop();
+        const logoPath = `${user.id}/logo_${Date.now()}.${ext}`;
+        const { error: logoUpErr } = await supabase.storage.from("hustle-media").upload(logoPath, logoFile);
+        if (logoUpErr) throw logoUpErr;
+        const { data: logoData } = supabase.storage.from("hustle-media").getPublicUrl(logoPath);
+        logoUrl = logoData.publicUrl;
+      }
+
       const hustle = await createHustle.mutateAsync({
         title, description, category_id: categoryId,
         price: price ? parseFloat(price) : null,
@@ -81,6 +92,12 @@ const CreateHustle = () => {
         contact_email: contactEmail || undefined,
         website_url: websiteUrl || undefined,
       });
+
+      // Update logo_url on the hustle
+      if (logoUrl) {
+        await supabase.from("hustles").update({ logo_url: logoUrl } as any).eq("id", hustle.id);
+      }
+
       if (files.length > 0) {
         await uploadMedia.mutateAsync({ hustleId: hustle.id, files });
       }
