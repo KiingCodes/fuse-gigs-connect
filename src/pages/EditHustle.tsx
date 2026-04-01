@@ -73,6 +73,7 @@ const EditHustle = () => {
         setGeoLocation({ lat: hustle.latitude, lng: hustle.longitude });
       }
       setExistingMedia(hustle.hustle_media?.sort((a, b) => a.display_order - b.display_order) || []);
+      setExistingLogoUrl((hustle as any).logo_url || null);
       setInitialized(true);
     }
   }, [hustle, initialized]);
