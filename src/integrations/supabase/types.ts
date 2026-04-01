@@ -376,6 +376,7 @@ export type Database = {
           is_featured: boolean | null
           latitude: number | null
           location: string | null
+          logo_url: string | null
           longitude: number | null
           price: number | null
           price_type: string | null
@@ -396,6 +397,7 @@ export type Database = {
           is_featured?: boolean | null
           latitude?: number | null
           location?: string | null
+          logo_url?: string | null
           longitude?: number | null
           price?: number | null
           price_type?: string | null
@@ -416,6 +418,7 @@ export type Database = {
           is_featured?: boolean | null
           latitude?: number | null
           location?: string | null
+          logo_url?: string | null
           longitude?: number | null
           price?: number | null
           price_type?: string | null
