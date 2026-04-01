@@ -106,6 +106,7 @@ const Navbar = () => {
       {mobileOpen && (
         <div className="border-t border-border bg-background px-4 pb-4 md:hidden animate-fade-in">
           <div className="flex flex-col gap-2 pt-2">
+            <div className="flex justify-end"><DarkModeToggle /></div>
             <Link to="/explore" onClick={() => setMobileOpen(false)}>
               <Button variant="ghost" className="w-full justify-start">Explore</Button>
             </Link>
