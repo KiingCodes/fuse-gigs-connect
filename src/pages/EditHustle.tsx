@@ -27,6 +27,7 @@ const EditHustle = () => {
   const uploadMedia = useUploadHustleMedia();
   const deleteMedia = useDeleteHustleMedia();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const logoInputRef = useRef<HTMLInputElement>(null);
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -39,6 +40,10 @@ const EditHustle = () => {
   const [newFiles, setNewFiles] = useState<File[]>([]);
   const [newPreviews, setNewPreviews] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
+  const [initialized, setInitialized] = useState(false);
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [existingLogoUrl, setExistingLogoUrl] = useState<string | null>(null);
   const [initialized, setInitialized] = useState(false);
   const { location: geoLocation, loading: geoLoading, requestLocation, setLocation: setGeoLocation } = useGeolocation();
 
