@@ -44,7 +44,6 @@ const EditHustle = () => {
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [existingLogoUrl, setExistingLogoUrl] = useState<string | null>(null);
-  const [initialized, setInitialized] = useState(false);
   const { location: geoLocation, loading: geoLoading, requestLocation, setLocation: setGeoLocation } = useGeolocation();
 
   const { data: hustle, isLoading } = useQuery({
