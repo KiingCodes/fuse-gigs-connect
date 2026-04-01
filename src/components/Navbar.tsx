@@ -30,6 +30,7 @@ const Navbar = () => {
 
         {/* Desktop */}
         <div className="hidden items-center gap-2 md:flex">
+          <DarkModeToggle />
           <Link to="/explore">
             <Button variant="ghost" size="sm">Explore</Button>
           </Link>
