@@ -1,0 +1,1 @@
+ALTER TABLE public.hustles ADD COLUMN logo_url text;
