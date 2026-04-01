@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import { useCategories, useCreateHustle, useUploadHustleMedia } from "@/hooks/useData";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import Navbar from "@/components/Navbar";
