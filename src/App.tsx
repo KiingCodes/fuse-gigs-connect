@@ -21,6 +21,7 @@ import BoostHustle from "./pages/BoostHustle";
 import Academy from "./pages/Academy";
 import Bookings from "./pages/Bookings";
 import SavedHustles from "./pages/SavedHustles";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
