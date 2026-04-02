@@ -131,7 +131,7 @@ const Settings = () => {
   };
 
   const toggleAll = (value: boolean) => {
-    const updated = Object.fromEntries(Object.keys(prefs).map(k => [k, value])) as NotificationPrefs;
+    const updated = Object.fromEntries(Object.keys(prefs).map(k => [k, value])) as unknown as NotificationPrefs;
     setPrefs(updated);
     localStorage.setItem("notif_prefs", JSON.stringify(updated));
     toast.success(value ? "All notifications enabled" : "All notifications disabled");
