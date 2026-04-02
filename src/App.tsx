@@ -52,6 +52,7 @@ const App = () => (
               <Route path="/academy" element={<Academy />} />
               <Route path="/bookings" element={<Bookings />} />
               <Route path="/saved" element={<SavedHustles />} />
+              <Route path="/settings" element={<Settings />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
