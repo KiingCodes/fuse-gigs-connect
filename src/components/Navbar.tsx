@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Plus, LayoutDashboard, User, LogOut, Menu, X, MessageSquare, Shield, GraduationCap, CalendarDays, Heart } from "lucide-react";
+import { Plus, LayoutDashboard, User, LogOut, Menu, X, MessageSquare, Shield, GraduationCap, CalendarDays, Heart, Settings } from "lucide-react";
 import { useState } from "react";
 import logo from "@/assets/logo.png";
 import NotificationBell from "@/components/NotificationBell";
@@ -83,6 +83,9 @@ const Navbar = () => {
                   <DropdownMenuItem onClick={() => navigate("/profile")}>
                     <User className="mr-2 h-4 w-4" /> Profile
                   </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/settings")}>
+                    <Settings className="mr-2 h-4 w-4" /> Settings
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => signOut()}>
                     <LogOut className="mr-2 h-4 w-4" /> Sign Out
                   </DropdownMenuItem>
@@ -152,6 +155,11 @@ const Navbar = () => {
                 <Link to="/profile" onClick={() => setMobileOpen(false)}>
                   <Button variant="ghost" className="w-full justify-start">
                     <User className="mr-2 h-4 w-4" /> Profile
+                  </Button>
+                </Link>
+                <Link to="/settings" onClick={() => setMobileOpen(false)}>
+                  <Button variant="ghost" className="w-full justify-start">
+                    <Settings className="mr-2 h-4 w-4" /> Settings
                   </Button>
                 </Link>
                 <Button variant="ghost" className="w-full justify-start" onClick={() => { signOut(); setMobileOpen(false); }}>
