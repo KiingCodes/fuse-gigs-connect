@@ -157,6 +157,11 @@ const Navbar = () => {
                     <User className="mr-2 h-4 w-4" /> Profile
                   </Button>
                 </Link>
+                <Link to="/settings" onClick={() => setMobileOpen(false)}>
+                  <Button variant="ghost" className="w-full justify-start">
+                    <Settings className="mr-2 h-4 w-4" /> Settings
+                  </Button>
+                </Link>
                 <Button variant="ghost" className="w-full justify-start" onClick={() => { signOut(); setMobileOpen(false); }}>
                   <LogOut className="mr-2 h-4 w-4" /> Sign Out
                 </Button>
