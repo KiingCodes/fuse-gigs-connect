@@ -64,10 +64,37 @@ export const useAllVerificationRequests = (statusFilter?: string) => {
         .in("user_id", userIds.length > 0 ? userIds : ["_"]);
 
       const profileMap = new Map((profiles || []).map((p) => [p.user_id, p]));
-      return (data || []).map((r) => ({
-        ...r,
-        profiles: profileMap.get(r.user_id),
-      })) as VerificationRequestWithProfile[];
+
+      // Generate signed URLs for private verification docs
+      const results = await Promise.all(
+        (data || []).map(async (r) => {
+          const getSignedUrl = async (path: string | null) => {
+            if (!path) return null;
+            // If it's already a full URL, return as-is
+            if (path.startsWith("http")) return path;
+            const { data: signedData } = await supabase.storage
+              .from("verification-docs")
+              .createSignedUrl(path, 3600); // 1 hour
+            return signedData?.signedUrl || null;
+          };
+
+          const [id_document_url, selfie_url, business_reg_url] = await Promise.all([
+            getSignedUrl(r.id_document_url),
+            getSignedUrl(r.selfie_url),
+            getSignedUrl(r.business_reg_url),
+          ]);
+
+          return {
+            ...r,
+            id_document_url,
+            selfie_url,
+            business_reg_url,
+            profiles: profileMap.get(r.user_id),
+          };
+        })
+      );
+
+      return results as VerificationRequestWithProfile[];
     },
   });
 };
