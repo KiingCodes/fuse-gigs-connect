@@ -77,8 +77,9 @@ const HustleDetail = () => {
   };
 
   const handleShare = async () => {
-    // Use published URL for sharing, not preview URL
-    const shareUrl = `https://fusegigs.lovable.app/hustle/${id}`;
+    // Use the app's canonical URL for sharing so links open the app directly
+    const baseUrl = window.location.origin;
+    const shareUrl = `${baseUrl}/hustle/${id}`;
     if (navigator.share) {
       await navigator.share({ title: hustle?.title, url: shareUrl });
     } else {
