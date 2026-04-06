@@ -77,10 +77,12 @@ const HustleDetail = () => {
   };
 
   const handleShare = async () => {
+    // Use published URL for sharing, not preview URL
+    const shareUrl = `https://fusegigs.lovable.app/hustle/${id}`;
     if (navigator.share) {
-      await navigator.share({ title: hustle?.title, url: window.location.href });
+      await navigator.share({ title: hustle?.title, url: shareUrl });
     } else {
-      navigator.clipboard.writeText(window.location.href);
+      navigator.clipboard.writeText(shareUrl);
       toast.success("Link copied!");
     }
   };

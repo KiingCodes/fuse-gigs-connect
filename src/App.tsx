@@ -54,6 +54,7 @@ const App = () => (
               <Route path="/bookings" element={<Bookings />} />
               <Route path="/saved" element={<SavedHustles />} />
               <Route path="/settings" element={<Settings />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
