@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { notifyWelcome } from "@/hooks/useNotifications";
 
 interface AuthContextType {
   user: User | null;
@@ -25,10 +26,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
+
+      // Send welcome notification on first sign-up
+      if (event === "SIGNED_IN" && session?.user) {
+        const isNewUser = new Date(session.user.created_at).getTime() > Date.now() - 60000;
+        if (isNewUser) {
+          setTimeout(() => notifyWelcome(session.user.id), 2000);
+        }
+      }
     });
 
     supabase.auth.getSession().then(({ data: { session } }) => {

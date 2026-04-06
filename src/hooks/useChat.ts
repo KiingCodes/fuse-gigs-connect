@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect } from "react";
+import { notifyNewMessage } from "@/hooks/useNotifications";
 
 export interface Conversation {
   id: string;
@@ -128,6 +129,15 @@ export const useSendMessage = () => {
       if (error) throw error;
       // Update conversation timestamp
       await supabase.from("conversations").update({ updated_at: new Date().toISOString() }).eq("id", conversationId);
+
+      // Notify the other participant
+      const { data: conv } = await supabase.from("conversations").select("participant_1, participant_2").eq("id", conversationId).single();
+      if (conv) {
+        const recipientId = conv.participant_1 === user.id ? conv.participant_2 : conv.participant_1;
+        const { data: senderProfile } = await supabase.from("profiles").select("display_name").eq("user_id", user.id).single();
+        notifyNewMessage(recipientId, senderProfile?.display_name || "Someone", conversationId);
+      }
+
       return data;
     },
     onSuccess: (_, vars) => {

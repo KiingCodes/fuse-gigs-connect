@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { notifyVerificationApproved, notifyVerificationRejected } from "@/hooks/useNotifications";
 
 export const useIsAdmin = () => {
   const { user } = useAuth();
@@ -129,6 +130,9 @@ export const useReviewVerification = () => {
           .update({ verification_level: level })
           .eq("user_id", userId);
         if (profileError) throw profileError;
+        notifyVerificationApproved(userId, level);
+      } else {
+        notifyVerificationRejected(userId, adminNotes || "Please review your submission and try again.");
       }
     },
     onSuccess: () => {
