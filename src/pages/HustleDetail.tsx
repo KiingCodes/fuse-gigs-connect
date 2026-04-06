@@ -77,10 +77,13 @@ const HustleDetail = () => {
   };
 
   const handleShare = async () => {
+    // Use the app's canonical URL for sharing so links open the app directly
+    const baseUrl = window.location.origin;
+    const shareUrl = `${baseUrl}/hustle/${id}`;
     if (navigator.share) {
-      await navigator.share({ title: hustle?.title, url: window.location.href });
+      await navigator.share({ title: hustle?.title, url: shareUrl });
     } else {
-      navigator.clipboard.writeText(window.location.href);
+      navigator.clipboard.writeText(shareUrl);
       toast.success("Link copied!");
     }
   };
