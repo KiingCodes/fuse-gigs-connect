@@ -78,6 +78,13 @@ const ReviewSection = ({ hustleId, hustleOwnerId }: ReviewSectionProps) => {
         comment: newComment || null,
       });
       if (error) throw error;
+
+      // Notify the hustle owner
+      const { data: reviewerProfile } = await supabase.from("profiles").select("display_name").eq("user_id", user.id).single();
+      const { data: hustle } = await supabase.from("hustles").select("title, user_id").eq("id", hustleId).single();
+      if (hustle && hustle.user_id !== user.id) {
+        notifyNewReview(hustle.user_id, reviewerProfile?.display_name || "Someone", hustle.title, hustleId);
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["reviews", hustleId] });

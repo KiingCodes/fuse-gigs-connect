@@ -192,9 +192,16 @@ export const useAdminUpdateBoost = () => {
         .from("hustle_boosts")
         .update(updates)
         .eq("id", boostId)
-        .select()
+        .select("*, hustles(title)")
         .single();
       if (error) throw error;
+
+      // Notify the boost owner
+      if (status === "active" && data) {
+        const hustleTitle = (data as any).hustles?.title || "your hustle";
+        notifyBoostActivated(data.user_id, hustleTitle, data.hustle_id);
+      }
+
       return data;
     },
     onSuccess: () => {

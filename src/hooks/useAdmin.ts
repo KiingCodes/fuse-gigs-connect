@@ -130,6 +130,9 @@ export const useReviewVerification = () => {
           .update({ verification_level: level })
           .eq("user_id", userId);
         if (profileError) throw profileError;
+        notifyVerificationApproved(userId, level);
+      } else {
+        notifyVerificationRejected(userId, adminNotes || "Please review your submission and try again.");
       }
     },
     onSuccess: () => {

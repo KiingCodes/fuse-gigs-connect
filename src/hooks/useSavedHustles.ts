@@ -66,6 +66,13 @@ export const useToggleSave = () => {
         await supabase.from("saved_hustles").delete().eq("user_id", user.id).eq("hustle_id", hustleId);
       } else {
         await supabase.from("saved_hustles").insert({ user_id: user.id, hustle_id: hustleId });
+
+        // Notify the hustle owner
+        const { data: hustle } = await supabase.from("hustles").select("title, user_id").eq("id", hustleId).single();
+        const { data: saverProfile } = await supabase.from("profiles").select("display_name").eq("user_id", user.id).single();
+        if (hustle && hustle.user_id !== user.id) {
+          notifyHustleSaved(hustle.user_id, saverProfile?.display_name || "Someone", hustle.title, hustleId);
+        }
       }
     },
     onSuccess: (_, { isSaved }) => {
