@@ -161,16 +161,27 @@ const HustleDetail = () => {
                 </button>
               </>
             )}
-            <motion.img
-              key={currentMedia}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              src={media[currentMedia]?.media_url}
-              alt=""
-              className="max-h-[85vh] max-w-[90vw] object-contain rounded-lg"
-              onClick={(e) => e.stopPropagation()}
-            />
+            {media[currentMedia]?.media_type === "video" ? (
+              <video
+                key={currentMedia}
+                src={media[currentMedia]?.media_url}
+                className="max-h-[85vh] max-w-[90vw] object-contain rounded-lg"
+                controls
+                autoPlay
+                onClick={(e) => e.stopPropagation()}
+              />
+            ) : (
+              <motion.img
+                key={currentMedia}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                src={media[currentMedia]?.media_url}
+                alt=""
+                className="max-h-[85vh] max-w-[90vw] object-contain rounded-lg"
+                onClick={(e) => e.stopPropagation()}
+              />
+            )}
             <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
               {media.map((_, i) => (
                 <button key={i} onClick={(e) => { e.stopPropagation(); setCurrentMedia(i); }} className={`h-2.5 w-2.5 rounded-full transition-all ${i === currentMedia ? "bg-white scale-125" : "bg-white/40"}`} />
