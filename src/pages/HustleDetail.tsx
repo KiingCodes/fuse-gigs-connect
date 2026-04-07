@@ -15,7 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MapPin, Star, MessageSquare, ArrowLeft, ChevronLeft, ChevronRight, Pencil, Trash2, Phone, Mail, Globe, CalendarDays, Heart, Share2 } from "lucide-react";
+import { MapPin, Star, MessageSquare, ArrowLeft, ChevronLeft, ChevronRight, Pencil, Trash2, Phone, Mail, Globe, CalendarDays, Heart, Share2, Clock } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
@@ -161,16 +161,27 @@ const HustleDetail = () => {
                 </button>
               </>
             )}
-            <motion.img
-              key={currentMedia}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              src={media[currentMedia]?.media_url}
-              alt=""
-              className="max-h-[85vh] max-w-[90vw] object-contain rounded-lg"
-              onClick={(e) => e.stopPropagation()}
-            />
+            {media[currentMedia]?.media_type === "video" ? (
+              <video
+                key={currentMedia}
+                src={media[currentMedia]?.media_url}
+                className="max-h-[85vh] max-w-[90vw] object-contain rounded-lg"
+                controls
+                autoPlay
+                onClick={(e) => e.stopPropagation()}
+              />
+            ) : (
+              <motion.img
+                key={currentMedia}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                src={media[currentMedia]?.media_url}
+                alt=""
+                className="max-h-[85vh] max-w-[90vw] object-contain rounded-lg"
+                onClick={(e) => e.stopPropagation()}
+              />
+            )}
             <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
               {media.map((_, i) => (
                 <button key={i} onClick={(e) => { e.stopPropagation(); setCurrentMedia(i); }} className={`h-2.5 w-2.5 rounded-full transition-all ${i === currentMedia ? "bg-white scale-125" : "bg-white/40"}`} />
@@ -277,6 +288,12 @@ const HustleDetail = () => {
               <div className="mb-3 flex items-center gap-2 flex-wrap">
                 {categoryData && <Badge variant="outline" className="font-medium">{categoryData.name}</Badge>}
                 {hustle.is_available_now && <Badge className="bg-success text-success-foreground border-0 text-xs"><span className="mr-1 inline-block h-1.5 w-1.5 rounded-full bg-success-foreground animate-pulse" /> Available Now</Badge>}
+                {hustleAny.available_from && hustleAny.available_to && (
+                  <Badge variant="outline" className="text-xs gap-1">
+                    <Clock className="h-3 w-3" />
+                    {hustleAny.available_from.slice(0, 5)} - {hustleAny.available_to.slice(0, 5)}
+                  </Badge>
+                )}
               </div>
               <h1 className="mb-3 text-3xl font-extrabold text-foreground tracking-tight">{hustle.title}</h1>
               {hustle.location && (

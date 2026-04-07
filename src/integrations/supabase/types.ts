@@ -148,6 +148,33 @@ export type Database = {
         }
         Relationships: []
       }
+      community_messages: {
+        Row: {
+          content: string | null
+          created_at: string
+          id: string
+          media_url: string | null
+          message_type: string
+          user_id: string
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          id?: string
+          media_url?: string | null
+          message_type?: string
+          user_id: string
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          id?: string
+          media_url?: string | null
+          message_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       conversations: {
         Row: {
           created_at: string
@@ -365,6 +392,8 @@ export type Database = {
       }
       hustles: {
         Row: {
+          available_from: string | null
+          available_to: string | null
           category_id: string | null
           contact_email: string | null
           contact_phone: string | null
@@ -386,6 +415,8 @@ export type Database = {
           website_url: string | null
         }
         Insert: {
+          available_from?: string | null
+          available_to?: string | null
           category_id?: string | null
           contact_email?: string | null
           contact_phone?: string | null
@@ -407,6 +438,8 @@ export type Database = {
           website_url?: string | null
         }
         Update: {
+          available_from?: string | null
+          available_to?: string | null
           category_id?: string | null
           contact_email?: string | null
           contact_phone?: string | null
@@ -510,6 +543,62 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      products: {
+        Row: {
+          category: string | null
+          created_at: string
+          currency: string
+          description: string
+          hustle_id: string | null
+          id: string
+          is_active: boolean
+          media_url: string | null
+          price: number
+          stock_quantity: number | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          currency?: string
+          description?: string
+          hustle_id?: string | null
+          id?: string
+          is_active?: boolean
+          media_url?: string | null
+          price: number
+          stock_quantity?: number | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          currency?: string
+          description?: string
+          hustle_id?: string | null
+          id?: string
+          is_active?: boolean
+          media_url?: string | null
+          price?: number
+          stock_quantity?: number | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "products_hustle_id_fkey"
+            columns: ["hustle_id"]
+            isOneToOne: false
+            referencedRelation: "hustles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {

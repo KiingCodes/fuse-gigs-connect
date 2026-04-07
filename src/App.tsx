@@ -23,6 +23,8 @@ import Bookings from "./pages/Bookings";
 import SavedHustles from "./pages/SavedHustles";
 import Settings from "./pages/Settings";
 import ResetPassword from "./pages/ResetPassword";
+import Community from "./pages/Community";
+import Products from "./pages/Products";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -55,6 +57,8 @@ const App = () => (
               <Route path="/saved" element={<SavedHustles />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/community" element={<Community />} />
+              <Route path="/products" element={<Products />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

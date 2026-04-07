@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { HustleWithDetails } from "@/hooks/useData";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Star, Navigation, Rocket, Heart } from "lucide-react";
+import { MapPin, Star, Navigation, Rocket, Heart, Play, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import VerificationBadge from "@/components/VerificationBadge";
@@ -27,6 +27,10 @@ const HustleCard = ({ hustle, featured, isBoosted }: HustleCardProps) => {
   const hustleAny = hustle as any;
   const logoUrl = hustleAny.logo_url;
   const mainImage = media[0]?.media_url;
+  const mainIsVideo = media[0]?.media_type === "video";
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const availableFrom = hustleAny.available_from;
+  const availableTo = hustleAny.available_to;
 
   const handleSave = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -47,7 +51,25 @@ const HustleCard = ({ hustle, featured, isBoosted }: HustleCardProps) => {
         }`}>
           {/* Image */}
           <div className="relative aspect-[4/3] overflow-hidden bg-muted">
-            {mainImage ? (
+            {mainIsVideo && mainImage ? (
+              <div className="relative h-full w-full">
+                <video
+                  ref={videoRef}
+                  src={mainImage}
+                  className="h-full w-full object-cover"
+                  muted
+                  loop
+                  playsInline
+                  onMouseEnter={() => videoRef.current?.play()}
+                  onMouseLeave={() => { videoRef.current?.pause(); if (videoRef.current) videoRef.current.currentTime = 0; }}
+                />
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div className="rounded-full bg-black/50 p-2.5 backdrop-blur-sm">
+                    <Play className="h-5 w-5 text-white fill-white" />
+                  </div>
+                </div>
+              </div>
+            ) : mainImage ? (
               <img src={mainImage} alt={hustle.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
             ) : (
               <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-muted to-muted/50">
@@ -132,7 +154,13 @@ const HustleCard = ({ hustle, featured, isBoosted }: HustleCardProps) => {
             <p className="line-clamp-2 text-xs text-muted-foreground mt-1 leading-relaxed">
               {hustle.description}
             </p>
-            <div className="flex items-center gap-2 mt-2.5">
+            <div className="flex items-center gap-2 mt-2.5 flex-wrap">
+              {availableFrom && availableTo && (
+                <span className="flex items-center gap-0.5 text-[11px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded-full">
+                  <Clock className="h-2.5 w-2.5" />
+                  {availableFrom.slice(0, 5)}-{availableTo.slice(0, 5)}
+                </span>
+              )}
               {hustle.distance != null && (
                 <span className="flex items-center gap-0.5 text-[11px] text-primary font-medium bg-primary/10 px-1.5 py-0.5 rounded-full">
                   <Navigation className="h-2.5 w-2.5" />
