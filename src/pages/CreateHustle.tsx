@@ -96,9 +96,13 @@ const CreateHustle = () => {
         website_url: websiteUrl || undefined,
       });
 
-      // Update logo_url on the hustle
-      if (logoUrl) {
-        await supabase.from("hustles").update({ logo_url: logoUrl } as any).eq("id", hustle.id);
+      // Update logo_url and availability on the hustle
+      const extraUpdates: Record<string, any> = {};
+      if (logoUrl) extraUpdates.logo_url = logoUrl;
+      if (availableFrom) extraUpdates.available_from = availableFrom;
+      if (availableTo) extraUpdates.available_to = availableTo;
+      if (Object.keys(extraUpdates).length > 0) {
+        await supabase.from("hustles").update(extraUpdates).eq("id", hustle.id);
       }
 
       if (files.length > 0) {
