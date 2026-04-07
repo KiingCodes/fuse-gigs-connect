@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Plus, LayoutDashboard, User, LogOut, Menu, X, MessageSquare, Shield, GraduationCap, CalendarDays, Heart, Settings } from "lucide-react";
+import { Plus, LayoutDashboard, User, LogOut, Menu, X, MessageSquare, Shield, GraduationCap, CalendarDays, Heart, Settings, Users, ShoppingBag } from "lucide-react";
 import { useState } from "react";
 import logo from "@/assets/logo.png";
 import NotificationBell from "@/components/NotificationBell";
@@ -33,6 +33,12 @@ const Navbar = () => {
           <DarkModeToggle />
           <Link to="/explore">
             <Button variant="ghost" size="sm">Explore</Button>
+          </Link>
+          <Link to="/community">
+            <Button variant="ghost" size="sm" className="gap-1"><Users className="h-4 w-4" /> Community</Button>
+          </Link>
+          <Link to="/products">
+            <Button variant="ghost" size="sm" className="gap-1"><ShoppingBag className="h-4 w-4" /> Products</Button>
           </Link>
           <Link to="/academy">
             <Button variant="ghost" size="sm" className="gap-1"><GraduationCap className="h-4 w-4" /> Academy</Button>
@@ -112,6 +118,16 @@ const Navbar = () => {
             <div className="flex justify-end"><DarkModeToggle /></div>
             <Link to="/explore" onClick={() => setMobileOpen(false)}>
               <Button variant="ghost" className="w-full justify-start">Explore</Button>
+            </Link>
+            <Link to="/community" onClick={() => setMobileOpen(false)}>
+              <Button variant="ghost" className="w-full justify-start">
+                <Users className="mr-2 h-4 w-4" /> Community
+              </Button>
+            </Link>
+            <Link to="/products" onClick={() => setMobileOpen(false)}>
+              <Button variant="ghost" className="w-full justify-start">
+                <ShoppingBag className="mr-2 h-4 w-4" /> Products
+              </Button>
             </Link>
             <Link to="/academy" onClick={() => setMobileOpen(false)}>
               <Button variant="ghost" className="w-full justify-start">
