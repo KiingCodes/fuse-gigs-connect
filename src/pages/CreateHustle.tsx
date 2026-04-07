@@ -35,6 +35,8 @@ const CreateHustle = () => {
   const [contactEmail, setContactEmail] = useState("");
   const [websiteUrl, setWebsiteUrl] = useState("");
   const [isAvailableNow, setIsAvailableNow] = useState(false);
+  const [availableFrom, setAvailableFrom] = useState("");
+  const [availableTo, setAvailableTo] = useState("");
   const [files, setFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
   const [logoFile, setLogoFile] = useState<File | null>(null);
@@ -222,6 +224,22 @@ const CreateHustle = () => {
                   <Label htmlFor="available" className="text-sm font-medium cursor-pointer">Available Now</Label>
                   <p className="text-xs text-muted-foreground">Mark yourself as currently available</p>
                 </div>
+              </div>
+
+              {/* Availability Hours */}
+              <div className="rounded-lg border border-border p-4 space-y-3">
+                <Label className="text-sm font-medium">Working Hours (optional)</Label>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <Label className="text-xs text-muted-foreground">From</Label>
+                    <Input type="time" value={availableFrom} onChange={(e) => setAvailableFrom(e.target.value)} />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs text-muted-foreground">To</Label>
+                    <Input type="time" value={availableTo} onChange={(e) => setAvailableTo(e.target.value)} />
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground">Let customers know when you're available</p>
               </div>
 
               {/* Media Upload */}
