@@ -36,6 +36,8 @@ const EditHustle = () => {
   const [priceType, setPriceType] = useState("fixed");
   const [location, setLocation] = useState("");
   const [isAvailableNow, setIsAvailableNow] = useState(false);
+  const [availableFrom, setAvailableFrom] = useState("");
+  const [availableTo, setAvailableTo] = useState("");
   const [existingMedia, setExistingMedia] = useState<any[]>([]);
   const [newFiles, setNewFiles] = useState<File[]>([]);
   const [newPreviews, setNewPreviews] = useState<string[]>([]);
@@ -69,6 +71,8 @@ const EditHustle = () => {
       setPriceType(hustle.price_type || "fixed");
       setLocation(hustle.location || "");
       setIsAvailableNow(hustle.is_available_now || false);
+      setAvailableFrom((hustle as any).available_from || "");
+      setAvailableTo((hustle as any).available_to || "");
       if (hustle.latitude && hustle.longitude) {
         setGeoLocation({ lat: hustle.latitude, lng: hustle.longitude });
       }
@@ -147,6 +151,16 @@ const EditHustle = () => {
         is_available_now: isAvailableNow,
         logo_url: logoUrl,
       });
+
+      // Update availability times
+      const extraUpdates: Record<string, any> = {};
+      if (availableFrom) extraUpdates.available_from = availableFrom;
+      else extraUpdates.available_from = null;
+      if (availableTo) extraUpdates.available_to = availableTo;
+      else extraUpdates.available_to = null;
+      if (Object.keys(extraUpdates).length > 0) {
+        await supabase.from("hustles").update(extraUpdates).eq("id", id!);
+      }
 
       if (newFiles.length > 0) {
         await uploadMedia.mutateAsync({ hustleId: id!, files: newFiles });
@@ -269,6 +283,21 @@ const EditHustle = () => {
                 <div>
                   <Label htmlFor="available" className="text-sm font-medium cursor-pointer">Available Now</Label>
                   <p className="text-xs text-muted-foreground">Mark yourself as currently available</p>
+                </div>
+              </div>
+
+              {/* Availability Hours */}
+              <div className="rounded-lg border border-border p-4 space-y-3">
+                <Label className="text-sm font-medium">Working Hours (optional)</Label>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <Label className="text-xs text-muted-foreground">From</Label>
+                    <Input type="time" value={availableFrom} onChange={(e) => setAvailableFrom(e.target.value)} />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs text-muted-foreground">To</Label>
+                    <Input type="time" value={availableTo} onChange={(e) => setAvailableTo(e.target.value)} />
+                  </div>
                 </div>
               </div>
 
