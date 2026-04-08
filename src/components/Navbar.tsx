@@ -55,6 +55,11 @@ const Navbar = () => {
                   <Heart className="h-5 w-5" />
                 </Button>
               </Link>
+              <Link to="/wallet">
+                <Button variant="ghost" size="icon" className="rounded-full" title="Wallet">
+                  <Wallet className="h-5 w-5" />
+                </Button>
+              </Link>
               <Link to="/bookings">
                 <Button variant="ghost" size="icon" className="rounded-full" title="Bookings">
                   <CalendarDays className="h-5 w-5" />
@@ -144,6 +149,11 @@ const Navbar = () => {
                 <Link to="/saved" onClick={() => setMobileOpen(false)}>
                   <Button variant="ghost" className="w-full justify-start">
                     <Heart className="mr-2 h-4 w-4" /> Saved
+                  </Button>
+                </Link>
+                <Link to="/wallet" onClick={() => setMobileOpen(false)}>
+                  <Button variant="ghost" className="w-full justify-start">
+                    <Wallet className="mr-2 h-4 w-4" /> Wallet
                   </Button>
                 </Link>
                 <Link to="/bookings" onClick={() => setMobileOpen(false)}>
