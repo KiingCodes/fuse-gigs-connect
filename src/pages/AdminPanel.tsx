@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useIsAdmin, useAllVerificationRequests, useReviewVerification } from "@/hooks/useAdmin";
 import { useAllBoosts, useAdminUpdateBoost } from "@/hooks/useBoosts";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import SEO from "@/components/SEO";
 import Navbar from "@/components/Navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,7 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { CheckCircle, XCircle, Clock, Shield, Loader2, Phone, FileText, Camera, Briefcase, Rocket } from "lucide-react";
+import { CheckCircle, XCircle, Clock, Shield, Loader2, Phone, FileText, Camera, Briefcase, Rocket, AlertTriangle, Flag, Ban } from "lucide-react";
 import { format } from "date-fns";
 
 const STATUS_BADGE: Record<string, { variant: "default" | "secondary" | "destructive" | "outline"; label: string }> = {
@@ -117,12 +119,15 @@ const AdminPanel = () => {
         <h1 className="text-3xl font-bold mb-6">Admin Panel</h1>
 
         <Tabs value={mainTab} onValueChange={setMainTab}>
-          <TabsList className="mb-6">
+          <TabsList className="mb-6 flex-wrap">
             <TabsTrigger value="verifications" className="gap-1">
               <Shield className="h-4 w-4" /> Verifications
             </TabsTrigger>
             <TabsTrigger value="boosts" className="gap-1">
               <Rocket className="h-4 w-4" /> Boosts
+            </TabsTrigger>
+            <TabsTrigger value="reports" className="gap-1">
+              <AlertTriangle className="h-4 w-4" /> Reports
             </TabsTrigger>
           </TabsList>
 
@@ -311,6 +316,11 @@ const AdminPanel = () => {
                 )}
               </TabsContent>
             </Tabs>
+          </TabsContent>
+
+          {/* Reports Tab */}
+          <TabsContent value="reports">
+            <FraudReportsPanel />
           </TabsContent>
         </Tabs>
       </div>
