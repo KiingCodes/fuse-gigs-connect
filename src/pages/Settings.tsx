@@ -131,7 +131,7 @@ const DataModeCard = () => {
   );
 };
 
-
+const Settings = () => {
   const { user, signOut } = useAuth();
   const { data: profile } = useProfile();
   const updateProfile = useUpdateProfile();
