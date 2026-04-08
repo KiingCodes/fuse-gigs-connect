@@ -207,6 +207,9 @@ const HustleDetail = () => {
             <Button size="sm" variant="outline" className="gap-1" onClick={handleShare}>
               <Share2 className="h-4 w-4" /> Share
             </Button>
+            {user && !isOwner && (
+              <ReportScamDialog reportedHustleId={hustle.id} reportedUserId={hustle.user_id} />
+            )}
             {isOwner && (
               <>
                 <Button size="sm" variant="outline" className="gap-1" onClick={() => navigate(`/edit/${hustle.id}`)}>
