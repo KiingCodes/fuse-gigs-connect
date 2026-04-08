@@ -11,6 +11,7 @@ import VerificationBadge from "@/components/VerificationBadge";
 import HustleMap from "@/components/HustleMap";
 import BookingModal from "@/components/BookingModal";
 import ReviewSection from "@/components/ReviewSection";
+import ReportScamDialog from "@/components/ReportScamDialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -206,6 +207,9 @@ const HustleDetail = () => {
             <Button size="sm" variant="outline" className="gap-1" onClick={handleShare}>
               <Share2 className="h-4 w-4" /> Share
             </Button>
+            {user && !isOwner && (
+              <ReportScamDialog reportedHustleId={hustle.id} reportedUserId={hustle.user_id} />
+            )}
             {isOwner && (
               <>
                 <Button size="sm" variant="outline" className="gap-1" onClick={() => navigate(`/edit/${hustle.id}`)}>

@@ -725,6 +725,78 @@ export type Database = {
           },
         ]
       }
+      scam_reports: {
+        Row: {
+          admin_notes: string | null
+          created_at: string
+          description: string | null
+          id: string
+          reason: string
+          report_type: string
+          reported_hustle_id: string | null
+          reported_user_id: string | null
+          reporter_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          reason: string
+          report_type?: string
+          reported_hustle_id?: string | null
+          reported_user_id?: string | null
+          reporter_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          reason?: string
+          report_type?: string
+          reported_hustle_id?: string | null
+          reported_user_id?: string | null
+          reporter_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_flags: {
+        Row: {
+          created_at: string
+          flag_type: string
+          flagged_by: string | null
+          id: string
+          is_active: boolean
+          reason: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          flag_type?: string
+          flagged_by?: string | null
+          id?: string
+          is_active?: boolean
+          reason: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          flag_type?: string
+          flagged_by?: string | null
+          id?: string
+          is_active?: boolean
+          reason?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
@@ -780,6 +852,92 @@ export type Database = {
           phone?: string | null
           selfie_url?: string | null
           status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      wallet_transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string
+          description: string | null
+          id: string
+          recipient_id: string | null
+          reference: string | null
+          status: string
+          type: string
+          user_id: string
+          wallet_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          recipient_id?: string | null
+          reference?: string | null
+          status?: string
+          type: string
+          user_id: string
+          wallet_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          recipient_id?: string | null
+          reference?: string | null
+          status?: string
+          type?: string
+          user_id?: string
+          wallet_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wallet_transactions_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "wallets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wallets: {
+        Row: {
+          balance_kes: number
+          balance_ngn: number
+          balance_usd: number
+          balance_zar: number
+          created_at: string
+          id: string
+          is_frozen: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          balance_kes?: number
+          balance_ngn?: number
+          balance_usd?: number
+          balance_zar?: number
+          created_at?: string
+          id?: string
+          is_frozen?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          balance_kes?: number
+          balance_ngn?: number
+          balance_usd?: number
+          balance_zar?: number
+          created_at?: string
+          id?: string
+          is_frozen?: boolean
           updated_at?: string
           user_id?: string
         }

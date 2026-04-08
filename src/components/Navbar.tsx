@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Plus, LayoutDashboard, User, LogOut, Menu, X, MessageSquare, Shield, GraduationCap, CalendarDays, Heart, Settings, Users, ShoppingBag } from "lucide-react";
+import { Plus, LayoutDashboard, User, LogOut, Menu, X, MessageSquare, Shield, GraduationCap, CalendarDays, Heart, Settings, Users, ShoppingBag, Wallet } from "lucide-react";
 import { useState } from "react";
 import logo from "@/assets/logo.png";
 import NotificationBell from "@/components/NotificationBell";
@@ -53,6 +53,11 @@ const Navbar = () => {
               <Link to="/saved">
                 <Button variant="ghost" size="icon" className="rounded-full" title="Saved">
                   <Heart className="h-5 w-5" />
+                </Button>
+              </Link>
+              <Link to="/wallet">
+                <Button variant="ghost" size="icon" className="rounded-full" title="Wallet">
+                  <Wallet className="h-5 w-5" />
                 </Button>
               </Link>
               <Link to="/bookings">
@@ -144,6 +149,11 @@ const Navbar = () => {
                 <Link to="/saved" onClick={() => setMobileOpen(false)}>
                   <Button variant="ghost" className="w-full justify-start">
                     <Heart className="mr-2 h-4 w-4" /> Saved
+                  </Button>
+                </Link>
+                <Link to="/wallet" onClick={() => setMobileOpen(false)}>
+                  <Button variant="ghost" className="w-full justify-start">
+                    <Wallet className="mr-2 h-4 w-4" /> Wallet
                   </Button>
                 </Link>
                 <Link to="/bookings" onClick={() => setMobileOpen(false)}>
