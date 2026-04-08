@@ -37,6 +37,119 @@ const BOOST_STATUS_BADGE: Record<string, { variant: "default" | "secondary" | "d
   rejected: { variant: "destructive", label: "Rejected" },
 };
 
+
+const FraudReportsPanel = () => {
+  const queryClient = useQueryClient();
+  const [reportTab, setReportTab] = useState("pending");
+  
+  const { data: reports, isLoading } = useQuery({
+    queryKey: ["admin-scam-reports", reportTab],
+    queryFn: async () => {
+      let query = supabase.from("scam_reports").select("*").order("created_at", { ascending: false });
+      if (reportTab !== "all") query = query.eq("status", reportTab);
+      const { data, error } = await query;
+      if (error) throw error;
+      const userIds = [...new Set((data || []).flatMap((r: any) => [r.reporter_id, r.reported_user_id].filter(Boolean)))];
+      const { data: profiles } = await supabase.from("profiles").select("user_id, display_name, avatar_url").in("user_id", userIds.length > 0 ? userIds : ["_"]);
+      const profileMap = new Map((profiles || []).map((p: any) => [p.user_id, p]));
+      return (data || []).map((r: any) => ({ ...r, reporterProfile: profileMap.get(r.reporter_id), reportedProfile: profileMap.get(r.reported_user_id) }));
+    },
+  });
+
+  const updateReport = useMutation({
+    mutationFn: async ({ id, status, adminNotes }: { id: string; status: string; adminNotes?: string }) => {
+      const { error } = await supabase.from("scam_reports").update({ status, admin_notes: adminNotes || null }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-scam-reports"] });
+      toast.success("Report updated");
+    },
+  });
+
+  const flagUser = useMutation({
+    mutationFn: async ({ userId, reason, flagType }: { userId: string; reason: string; flagType: string }) => {
+      const { error } = await supabase.from("user_flags").insert({ user_id: userId, reason, flag_type: flagType });
+      if (error) throw error;
+    },
+    onSuccess: () => toast.success("User flagged"),
+  });
+
+  return (
+    <Tabs value={reportTab} onValueChange={setReportTab}>
+      <TabsList className="mb-4">
+        <TabsTrigger value="pending" className="gap-1"><Clock className="h-4 w-4" /> Pending</TabsTrigger>
+        <TabsTrigger value="reviewed">Reviewed</TabsTrigger>
+        <TabsTrigger value="resolved">Resolved</TabsTrigger>
+        <TabsTrigger value="all">All</TabsTrigger>
+      </TabsList>
+      <TabsContent value={reportTab}>
+        {isLoading ? (
+          <div className="flex justify-center py-12"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
+        ) : !reports || reports.length === 0 ? (
+          <Card><CardContent className="py-12 text-center text-muted-foreground">No {reportTab === "all" ? "" : reportTab} reports found.</CardContent></Card>
+        ) : (
+          <div className="space-y-4">
+            {reports.map((report: any) => (
+              <Card key={report.id}>
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <AlertTriangle className="h-5 w-5 text-destructive" />
+                      <div>
+                        <CardTitle className="text-base">{report.reason}</CardTitle>
+                        <p className="text-xs text-muted-foreground">{format(new Date(report.created_at), "MMM d, yyyy 'at' h:mm a")}</p>
+                      </div>
+                    </div>
+                    <Badge variant={report.status === "pending" ? "secondary" : report.status === "resolved" ? "default" : "outline"}>{report.status}</Badge>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="rounded-lg border p-3 bg-muted/30 space-y-2 text-sm">
+                    <div className="flex items-center gap-2">
+                      <span className="text-muted-foreground">Reporter:</span>
+                      <span className="font-medium">{report.reporterProfile?.display_name || "Unknown"}</span>
+                    </div>
+                    {report.reported_user_id && (
+                      <div className="flex items-center gap-2">
+                        <span className="text-muted-foreground">Reported User:</span>
+                        <span className="font-medium">{report.reportedProfile?.display_name || "Unknown"}</span>
+                      </div>
+                    )}
+                    {report.report_type && (
+                      <div className="flex items-center gap-2">
+                        <span className="text-muted-foreground">Type:</span>
+                        <Badge variant="outline" className="text-xs">{report.report_type}</Badge>
+                      </div>
+                    )}
+                    {report.description && <p className="text-muted-foreground">{report.description}</p>}
+                  </div>
+                  {report.admin_notes && <div className="text-sm rounded-lg border p-3 bg-muted/30"><span className="font-medium">Admin Notes: </span>{report.admin_notes}</div>}
+                  {report.status === "pending" && (
+                    <div className="flex gap-2 pt-2">
+                      <Button size="sm" className="flex-1 gap-1" onClick={() => updateReport.mutate({ id: report.id, status: "reviewed" })}>
+                        <CheckCircle className="h-4 w-4" /> Mark Reviewed
+                      </Button>
+                      <Button size="sm" variant="outline" className="flex-1 gap-1" onClick={() => updateReport.mutate({ id: report.id, status: "resolved" })}>
+                        Resolve
+                      </Button>
+                      {report.reported_user_id && (
+                        <Button size="sm" variant="destructive" className="gap-1" onClick={() => flagUser.mutate({ userId: report.reported_user_id, reason: report.reason, flagType: "warning" })}>
+                          <Flag className="h-4 w-4" /> Flag User
+                        </Button>
+                      )}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+      </TabsContent>
+    </Tabs>
+  );
+};
+
 const AdminPanel = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
