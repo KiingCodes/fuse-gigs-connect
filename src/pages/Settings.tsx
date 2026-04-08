@@ -92,7 +92,46 @@ const PRIVACY_ITEMS: { key: keyof PrivacyPrefs; label: string; description: stri
   { key: "allowMessages", label: "Allow Messages", description: "Let others send you direct messages", icon: <MessageSquare className="h-4 w-4" /> },
 ];
 
-const Settings = () => {
+const DataModeCard = () => {
+  const { lowDataMode, setLowDataMode, textOnly, setTextOnly, compressImages, setCompressImages } = useDataMode();
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <WifiOff className="h-5 w-5" /> Ultra-Low Data Mode
+        </CardTitle>
+        <CardDescription>Reduce data usage for slow connections</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-1">
+        <div className="flex items-center justify-between py-3">
+          <div className="flex items-center gap-3">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-accent-foreground"><Zap className="h-4 w-4" /></div>
+            <div><Label className="text-sm font-medium">Low Data Mode</Label><p className="text-xs text-muted-foreground">Minimize data usage overall</p></div>
+          </div>
+          <Switch checked={lowDataMode} onCheckedChange={setLowDataMode} />
+        </div>
+        <Separator />
+        <div className="flex items-center justify-between py-3">
+          <div className="flex items-center gap-3">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-accent-foreground"><EyeOff className="h-4 w-4" /></div>
+            <div><Label className="text-sm font-medium">Text-Only Mode</Label><p className="text-xs text-muted-foreground">Hide images and media to save data</p></div>
+          </div>
+          <Switch checked={textOnly} onCheckedChange={setTextOnly} />
+        </div>
+        <Separator />
+        <div className="flex items-center justify-between py-3">
+          <div className="flex items-center gap-3">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-accent-foreground"><Zap className="h-4 w-4" /></div>
+            <div><Label className="text-sm font-medium">Compress Images</Label><p className="text-xs text-muted-foreground">Load lower quality images to save bandwidth</p></div>
+          </div>
+          <Switch checked={compressImages} onCheckedChange={setCompressImages} />
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+
   const { user, signOut } = useAuth();
   const { data: profile } = useProfile();
   const updateProfile = useUpdateProfile();
