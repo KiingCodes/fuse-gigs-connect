@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile, useUpdateProfile } from "@/hooks/useData";
 import { supabase } from "@/integrations/supabase/client";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { useDataMode } from "@/contexts/DataModeContext";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Navbar from "@/components/Navbar";
 import SEO from "@/components/SEO";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,7 +22,7 @@ import { toast } from "sonner";
 import {
   Moon, Sun, Monitor, Bell, BellOff, MessageSquare, CalendarDays, Rocket, Star,
   Shield, Heart, GraduationCap, Trophy, Eye, CreditCard, Users, AlertTriangle,
-  Sparkles, UserCog, Lock, MapPin, Trash2, Save, EyeOff,
+  Sparkles, UserCog, Lock, MapPin, Trash2, Save, EyeOff, Globe, Zap, WifiOff,
 } from "lucide-react";
 import { requestNotificationPermission } from "@/hooks/usePushNotifications";
 
