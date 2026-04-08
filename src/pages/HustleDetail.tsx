@@ -11,6 +11,7 @@ import VerificationBadge from "@/components/VerificationBadge";
 import HustleMap from "@/components/HustleMap";
 import BookingModal from "@/components/BookingModal";
 import ReviewSection from "@/components/ReviewSection";
+import ReportScamDialog from "@/components/ReportScamDialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
