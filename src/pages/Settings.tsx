@@ -299,6 +299,22 @@ const Settings = () => {
           </CardContent>
         </Card>
 
+        {/* Language */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Globe className="h-5 w-5" /> Language
+            </CardTitle>
+            <CardDescription>Choose your preferred language</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <LanguageSwitcher />
+          </CardContent>
+        </Card>
+
+        {/* Ultra-Low Data Mode */}
+        <DataModeCard />
+
         {/* Privacy Controls */}
         <Card>
           <CardHeader>
