@@ -210,6 +210,33 @@ export type Database = {
           },
         ]
       }
+      guarantors: {
+        Row: {
+          created_at: string
+          guarantor_id: string
+          hustler_id: string
+          id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          guarantor_id: string
+          hustler_id: string
+          id?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          guarantor_id?: string
+          hustler_id?: string
+          id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       hustle_boosts: {
         Row: {
           amount_cents: number

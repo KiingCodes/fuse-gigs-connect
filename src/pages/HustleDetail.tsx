@@ -12,6 +12,10 @@ import HustleMap from "@/components/HustleMap";
 import BookingModal from "@/components/BookingModal";
 import ReviewSection from "@/components/ReviewSection";
 import ReportScamDialog from "@/components/ReportScamDialog";
+import GuarantorSection from "@/components/GuarantorSection";
+import GuarantorBadge from "@/components/GuarantorBadge";
+import { useScamDetector } from "@/hooks/useScamDetector";
+import ScamWarningBanner from "@/components/ScamWarningBanner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -32,6 +36,7 @@ const HustleDetail = () => {
   const navigate = useNavigate();
   const deleteHustle = useDeleteHustle();
   const startConversation = useStartConversation();
+  const { checkListing } = useScamDetector();
   const [currentMedia, setCurrentMedia] = useState(0);
   const [bookingOpen, setBookingOpen] = useState(false);
   const [galleryOpen, setGalleryOpen] = useState(false);
@@ -300,6 +305,13 @@ const HustleDetail = () => {
                 )}
               </div>
               <h1 className="mb-3 text-3xl font-extrabold text-foreground tracking-tight">{hustle.title}</h1>
+              
+              {/* Scam Detection Warning */}
+              {(() => {
+                const scamResult = checkListing(hustle.title, hustle.description);
+                return scamResult.isSuspicious ? <div className="mb-4"><ScamWarningBanner result={scamResult} /></div> : null;
+              })()}
+
               {hustle.location && (
                 <div className="mb-4 flex items-center gap-1.5 text-muted-foreground">
                   <MapPin className="h-4 w-4 text-primary" /> {hustle.location}
@@ -395,12 +407,17 @@ const HustleDetail = () => {
                     )}
                   </div>
                 </div>
-                {profileData?.bio && <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{profileData.bio}</p>}
+              {profileData?.bio && <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{profileData.bio}</p>}
                 {profileData?.response_time_minutes && (
                   <p className="mt-2 text-xs text-muted-foreground bg-muted/50 rounded-lg px-3 py-1.5 inline-block">⚡ Typically responds in {profileData.response_time_minutes} min</p>
                 )}
+                <div className="mt-3">
+                  <GuarantorBadge hustlerId={hustle.user_id} />
+                </div>
               </CardContent>
             </Card>
+
+            <GuarantorSection hustlerId={hustle.user_id} isOwner={!!isOwner} />
           </motion.div>
         </div>
 
