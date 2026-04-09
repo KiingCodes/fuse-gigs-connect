@@ -1,9 +1,11 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useMessages, useSendMessage, useMarkRead } from "@/hooks/useChat";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useScamDetector } from "@/hooks/useScamDetector";
+import ScamWarningBanner from "@/components/ScamWarningBanner";
 import Navbar from "@/components/Navbar";
 import SEO from "@/components/SEO";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -20,6 +22,7 @@ const Chat = () => {
   const [text, setText] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { checkMessage } = useScamDetector();
 
   const { data: messages, isLoading } = useMessages(conversationId);
   const sendMessage = useSendMessage();
@@ -111,7 +114,6 @@ const Chat = () => {
         </div>
       </div>
 
-      {/* Messages */}
       <div className="flex-1 overflow-y-auto">
         <div className="container mx-auto max-w-2xl px-4 py-4 space-y-3">
           {isLoading ? (
@@ -121,16 +123,24 @@ const Chat = () => {
           ) : messages && messages.length > 0 ? (
             messages.map((msg) => {
               const isMine = msg.sender_id === user.id;
+              const scamResult = !isMine && msg.content ? checkMessage(msg.content) : null;
               return (
-                <div key={msg.id} className={`flex ${isMine ? "justify-end" : "justify-start"}`}>
-                  <div className={`max-w-[75%] rounded-2xl px-4 py-2.5 ${isMine ? "bg-primary text-primary-foreground rounded-br-md" : "bg-muted text-foreground rounded-bl-md"}`}>
-                    {msg.message_type === "image" && msg.media_url && (
-                      <img src={msg.media_url} alt="Shared image" className="mb-1 rounded-lg max-h-48 object-cover" />
-                    )}
-                    {msg.content && <p className="text-sm whitespace-pre-wrap">{msg.content}</p>}
-                    <p className={`text-[10px] mt-1 ${isMine ? "text-primary-foreground/60" : "text-muted-foreground"}`}>
-                      {format(new Date(msg.created_at), "HH:mm")}
-                    </p>
+                <div key={msg.id}>
+                  {scamResult?.isSuspicious && (
+                    <div className="mb-1 max-w-[75%]">
+                      <ScamWarningBanner result={scamResult} />
+                    </div>
+                  )}
+                  <div className={`flex ${isMine ? "justify-end" : "justify-start"}`}>
+                    <div className={`max-w-[75%] rounded-2xl px-4 py-2.5 ${isMine ? "bg-primary text-primary-foreground rounded-br-md" : "bg-muted text-foreground rounded-bl-md"}`}>
+                      {msg.message_type === "image" && msg.media_url && (
+                        <img src={msg.media_url} alt="Shared image" className="mb-1 rounded-lg max-h-48 object-cover" />
+                      )}
+                      {msg.content && <p className="text-sm whitespace-pre-wrap">{msg.content}</p>}
+                      <p className={`text-[10px] mt-1 ${isMine ? "text-primary-foreground/60" : "text-muted-foreground"}`}>
+                        {format(new Date(msg.created_at), "HH:mm")}
+                      </p>
+                    </div>
                   </div>
                 </div>
               );
