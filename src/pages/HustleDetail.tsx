@@ -305,6 +305,13 @@ const HustleDetail = () => {
                 )}
               </div>
               <h1 className="mb-3 text-3xl font-extrabold text-foreground tracking-tight">{hustle.title}</h1>
+              
+              {/* Scam Detection Warning */}
+              {(() => {
+                const scamResult = checkListing(hustle.title, hustle.description);
+                return scamResult.isSuspicious ? <div className="mb-4"><ScamWarningBanner result={scamResult} /></div> : null;
+              })()}
+
               {hustle.location && (
                 <div className="mb-4 flex items-center gap-1.5 text-muted-foreground">
                   <MapPin className="h-4 w-4 text-primary" /> {hustle.location}
