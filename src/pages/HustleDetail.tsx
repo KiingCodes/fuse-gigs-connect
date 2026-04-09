@@ -12,6 +12,10 @@ import HustleMap from "@/components/HustleMap";
 import BookingModal from "@/components/BookingModal";
 import ReviewSection from "@/components/ReviewSection";
 import ReportScamDialog from "@/components/ReportScamDialog";
+import GuarantorSection from "@/components/GuarantorSection";
+import GuarantorBadge from "@/components/GuarantorBadge";
+import { useScamDetector } from "@/hooks/useScamDetector";
+import ScamWarningBanner from "@/components/ScamWarningBanner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -395,12 +399,17 @@ const HustleDetail = () => {
                     )}
                   </div>
                 </div>
-                {profileData?.bio && <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{profileData.bio}</p>}
+              {profileData?.bio && <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{profileData.bio}</p>}
                 {profileData?.response_time_minutes && (
                   <p className="mt-2 text-xs text-muted-foreground bg-muted/50 rounded-lg px-3 py-1.5 inline-block">⚡ Typically responds in {profileData.response_time_minutes} min</p>
                 )}
+                <div className="mt-3">
+                  <GuarantorBadge hustlerId={hustle.user_id} />
+                </div>
               </CardContent>
             </Card>
+
+            <GuarantorSection hustlerId={hustle.user_id} isOwner={!!isOwner} />
           </motion.div>
         </div>
 
