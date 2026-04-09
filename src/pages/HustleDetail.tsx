@@ -36,6 +36,7 @@ const HustleDetail = () => {
   const navigate = useNavigate();
   const deleteHustle = useDeleteHustle();
   const startConversation = useStartConversation();
+  const { checkListing } = useScamDetector();
   const [currentMedia, setCurrentMedia] = useState(0);
   const [bookingOpen, setBookingOpen] = useState(false);
   const [galleryOpen, setGalleryOpen] = useState(false);
