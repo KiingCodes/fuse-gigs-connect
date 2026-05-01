@@ -11,8 +11,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
-import { Camera } from "lucide-react";
+import { Camera, Share2 } from "lucide-react";
 import VerificationForm from "@/components/VerificationForm";
+import GuarantorRequestsPanel from "@/components/GuarantorRequestsPanel";
+import { buildShareUrl, shareLink } from "@/lib/share";
 
 const Profile = () => {
   const { user } = useAuth();
