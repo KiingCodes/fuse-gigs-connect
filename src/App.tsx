@@ -33,6 +33,7 @@ const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const Community = lazy(() => import("./pages/Community"));
 const Products = lazy(() => import("./pages/Products"));
 const Wallet = lazy(() => import("./pages/Wallet"));
+const PublicProfile = lazy(() => import("./pages/PublicProfile"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient({
@@ -84,6 +85,7 @@ const App = () => (
                     <Route path="/community" element={<Community />} />
                     <Route path="/products" element={<Products />} />
                     <Route path="/wallet" element={<Wallet />} />
+                    <Route path="/u/:userId" element={<PublicProfile />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </Suspense>
