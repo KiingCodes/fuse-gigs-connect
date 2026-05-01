@@ -86,8 +86,25 @@ const Profile = () => {
       <Navbar />
       <div className="container mx-auto max-w-xl px-4 py-8">
         <Card className="shadow-elevated">
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-2xl">Your Profile</CardTitle>
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-1.5"
+              onClick={async () => {
+                const url = buildShareUrl(`/u/${user.id}`);
+                await shareLink({
+                  url,
+                  title: profile?.display_name ? `${profile.display_name} on Fuse Gigs` : "My Fuse Gigs profile",
+                  text: profile?.bio || "Check out my profile on Fuse Gigs!",
+                  toastSuccess: toast.success,
+                  toastError: toast.error,
+                });
+              }}
+            >
+              <Share2 className="h-4 w-4" /> Share
+            </Button>
           </CardHeader>
           <CardContent>
             {/* Avatar */}
@@ -133,6 +150,9 @@ const Profile = () => {
             </form>
           </CardContent>
         </Card>
+
+        {/* Guarantor Requests */}
+        <GuarantorRequestsPanel />
 
         {/* Verification */}
         <VerificationForm currentLevel={profile?.verification_level ?? 0} />
