@@ -5,6 +5,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import Navbar from "@/components/Navbar";
 import SEO from "@/components/SEO";
 import HustleCard from "@/components/HustleCard";
+import VerticalHustleCarousel from "@/components/VerticalHustleCarousel";
 import InstallBanner from "@/components/InstallBanner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -111,39 +112,55 @@ const Index = () => {
         </section>
       )}
 
-      {/* Categories */}
+      {/* Categories – sleek horizontal scroll chips */}
       {categories && categories.length > 0 && (
-        <section className="bg-muted/50 py-12">
+        <section className="border-y border-border/50 bg-card py-4">
           <div className="container mx-auto px-4">
-            <h2 className="mb-6 text-2xl font-bold text-foreground">{t("section.categories")}</h2>
-            <div className="flex flex-wrap gap-2">
-              <Badge variant={!selectedCategory ? "default" : "outline"} className={`cursor-pointer px-4 py-2 text-sm transition-all ${!selectedCategory ? "gradient-primary text-primary-foreground border-0" : ""}`} onClick={() => setSelectedCategory(undefined)}>{t("common.all")}</Badge>
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+              <button
+                onClick={() => setSelectedCategory(undefined)}
+                className={`shrink-0 rounded-full px-4 py-1.5 text-xs font-semibold transition-all ${
+                  !selectedCategory
+                    ? "bg-foreground text-background shadow-md"
+                    : "bg-muted text-muted-foreground hover:bg-muted/70"
+                }`}
+              >
+                {t("common.all")}
+              </button>
               {categories.map((cat) => (
-                <Badge key={cat.id} variant={selectedCategory === cat.id ? "default" : "outline"} className={`cursor-pointer px-4 py-2 text-sm transition-all ${selectedCategory === cat.id ? "gradient-primary text-primary-foreground border-0" : ""}`} onClick={() => setSelectedCategory(cat.id)}>
+                <button
+                  key={cat.id}
+                  onClick={() => setSelectedCategory(cat.id)}
+                  className={`shrink-0 rounded-full px-4 py-1.5 text-xs font-semibold transition-all whitespace-nowrap ${
+                    selectedCategory === cat.id
+                      ? "bg-foreground text-background shadow-md"
+                      : "bg-muted text-muted-foreground hover:bg-muted/70"
+                  }`}
+                >
                   {cat.name}
-                </Badge>
+                </button>
               ))}
             </div>
           </div>
         </section>
       )}
 
-      {/* All Hustles */}
+      {/* All Hustles – vertical auto-slide carousel */}
       <section className="py-12">
         <div className="container mx-auto px-4">
-          <h2 className="mb-8 text-2xl font-bold text-foreground">{t("section.latest")}</h2>
+          <div className="mb-6 flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-foreground">{t("section.latest")}</h2>
+              <p className="text-xs text-muted-foreground mt-0.5">Auto-scrolling — hover to pause</p>
+            </div>
+            <Link to="/explore"><Button variant="outline" size="sm" className="gap-1">{t("section.viewAll")} <ArrowRight className="h-4 w-4" /></Button></Link>
+          </div>
           {isLoading ? (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {[...Array(6)].map((_, i) => <div key={i} className="aspect-[4/3] animate-pulse rounded-lg bg-muted" />)}
+            <div className="grid gap-4 sm:grid-cols-2">
+              {[...Array(4)].map((_, i) => <div key={i} className="aspect-[5/6] animate-pulse rounded-2xl bg-muted" />)}
             </div>
           ) : sortedHustles.length > 0 ? (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {sortedHustles.map((hustle) => (
-                <motion.div key={hustle.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-                  <HustleCard hustle={hustle} isBoosted={boostedIds?.has(hustle.id)} />
-                </motion.div>
-              ))}
-            </div>
+            <VerticalHustleCarousel hustles={sortedHustles} boostedIds={boostedIds} />
           ) : (
             <div className="py-16 text-center">
               <p className="text-lg text-muted-foreground">{t("section.noHustles")}</p>
