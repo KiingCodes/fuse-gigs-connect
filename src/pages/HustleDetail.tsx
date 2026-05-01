@@ -392,17 +392,19 @@ const HustleDetail = () => {
             <Card className="shadow-card rounded-2xl overflow-hidden">
               <CardContent className="p-6">
                 <div className="flex items-center gap-3">
-                  <Avatar className="h-14 w-14 ring-2 ring-primary/20">
-                    <AvatarImage src={profileData?.avatar_url || ""} alt={profileData?.display_name || "User"} />
-                    <AvatarFallback className="bg-gradient-to-br from-primary to-primary/70 text-primary-foreground font-bold">
-                      {profileData?.display_name?.[0]?.toUpperCase() || "U"}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <p className="font-bold text-foreground">{profileData?.display_name || "Unknown"}</p>
+                  <Link to={`/u/${hustle.user_id}`}>
+                    <Avatar className="h-14 w-14 ring-2 ring-primary/20 hover:ring-primary/50 transition-all">
+                      <AvatarImage src={profileData?.avatar_url || ""} alt={profileData?.display_name || "User"} />
+                      <AvatarFallback className="bg-gradient-to-br from-primary to-primary/70 text-primary-foreground font-bold">
+                        {profileData?.display_name?.[0]?.toUpperCase() || "U"}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Link>
+                  <div className="flex-1 min-w-0">
+                    <Link to={`/u/${hustle.user_id}`} className="flex items-center gap-2 hover:text-primary transition-colors">
+                      <p className="font-bold text-foreground truncate">{profileData?.display_name || "Unknown"}</p>
                       <VerificationBadge level={profileData?.verification_level ?? 0} showLabel />
-                    </div>
+                    </Link>
                     {profileData?.location && (
                       <p className="text-sm text-muted-foreground flex items-center gap-1 mt-0.5">
                         <MapPin className="h-3 w-3" /> {profileData.location}
@@ -416,6 +418,14 @@ const HustleDetail = () => {
                 )}
                 <div className="mt-3">
                   <GuarantorBadge hustlerId={hustle.user_id} />
+                </div>
+                <div className="mt-3 flex gap-2">
+                  <Link to={`/u/${hustle.user_id}`} className="flex-1">
+                    <Button variant="outline" size="sm" className="w-full gap-1.5 text-xs"><UserCircle2 className="h-3.5 w-3.5" /> View Profile</Button>
+                  </Link>
+                  <Button variant="outline" size="sm" className="flex-1 gap-1.5 text-xs" onClick={handleShareProfile}>
+                    <Share2 className="h-3.5 w-3.5" /> Share Profile
+                  </Button>
                 </div>
               </CardContent>
             </Card>
