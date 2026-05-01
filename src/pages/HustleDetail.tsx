@@ -20,7 +20,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MapPin, Star, MessageSquare, ArrowLeft, ChevronLeft, ChevronRight, Pencil, Trash2, Phone, Mail, Globe, CalendarDays, Heart, Share2, Clock } from "lucide-react";
+import { MapPin, Star, MessageSquare, ArrowLeft, ChevronLeft, ChevronRight, Pencil, Trash2, Phone, Mail, Globe, CalendarDays, Heart, Share2, Clock, UserCircle2 } from "lucide-react";
+import { buildShareUrl, shareLink } from "@/lib/share";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
@@ -83,24 +84,26 @@ const HustleDetail = () => {
   };
 
   const handleShare = async () => {
-    const baseUrl = window.location.origin;
-    const shareUrl = `${baseUrl}/hustle/${id}`;
-    try {
-      if (navigator.share) {
-        await navigator.share({ title: hustle?.title, url: shareUrl });
-      } else {
-        await navigator.clipboard.writeText(shareUrl);
-        toast.success("Link copied!");
-      }
-    } catch {
-      // Fallback if share is denied or fails
-      try {
-        await navigator.clipboard.writeText(shareUrl);
-        toast.success("Link copied!");
-      } catch {
-        toast.error("Could not share. Please copy the URL manually.");
-      }
-    }
+    const shareUrl = buildShareUrl(`/hustle/${id}`);
+    await shareLink({
+      url: shareUrl,
+      title: hustle?.title,
+      text: hustle?.description?.slice(0, 120),
+      toastSuccess: toast.success,
+      toastError: toast.error,
+    });
+  };
+
+  const handleShareProfile = async () => {
+    if (!hustle) return;
+    const shareUrl = buildShareUrl(`/u/${hustle.user_id}`);
+    await shareLink({
+      url: shareUrl,
+      title: profileData?.display_name ? `${profileData.display_name} on Fuse Gigs` : "Hustler profile",
+      text: profileData?.bio || "Check out this hustler on Fuse Gigs!",
+      toastSuccess: toast.success,
+      toastError: toast.error,
+    });
   };
 
   const media = hustle?.hustle_media?.sort((a, b) => a.display_order - b.display_order) || [];
@@ -389,17 +392,19 @@ const HustleDetail = () => {
             <Card className="shadow-card rounded-2xl overflow-hidden">
               <CardContent className="p-6">
                 <div className="flex items-center gap-3">
-                  <Avatar className="h-14 w-14 ring-2 ring-primary/20">
-                    <AvatarImage src={profileData?.avatar_url || ""} alt={profileData?.display_name || "User"} />
-                    <AvatarFallback className="bg-gradient-to-br from-primary to-primary/70 text-primary-foreground font-bold">
-                      {profileData?.display_name?.[0]?.toUpperCase() || "U"}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <p className="font-bold text-foreground">{profileData?.display_name || "Unknown"}</p>
+                  <Link to={`/u/${hustle.user_id}`}>
+                    <Avatar className="h-14 w-14 ring-2 ring-primary/20 hover:ring-primary/50 transition-all">
+                      <AvatarImage src={profileData?.avatar_url || ""} alt={profileData?.display_name || "User"} />
+                      <AvatarFallback className="bg-gradient-to-br from-primary to-primary/70 text-primary-foreground font-bold">
+                        {profileData?.display_name?.[0]?.toUpperCase() || "U"}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Link>
+                  <div className="flex-1 min-w-0">
+                    <Link to={`/u/${hustle.user_id}`} className="flex items-center gap-2 hover:text-primary transition-colors">
+                      <p className="font-bold text-foreground truncate">{profileData?.display_name || "Unknown"}</p>
                       <VerificationBadge level={profileData?.verification_level ?? 0} showLabel />
-                    </div>
+                    </Link>
                     {profileData?.location && (
                       <p className="text-sm text-muted-foreground flex items-center gap-1 mt-0.5">
                         <MapPin className="h-3 w-3" /> {profileData.location}
@@ -413,6 +418,14 @@ const HustleDetail = () => {
                 )}
                 <div className="mt-3">
                   <GuarantorBadge hustlerId={hustle.user_id} />
+                </div>
+                <div className="mt-3 flex gap-2">
+                  <Link to={`/u/${hustle.user_id}`} className="flex-1">
+                    <Button variant="outline" size="sm" className="w-full gap-1.5 text-xs"><UserCircle2 className="h-3.5 w-3.5" /> View Profile</Button>
+                  </Link>
+                  <Button variant="outline" size="sm" className="flex-1 gap-1.5 text-xs" onClick={handleShareProfile}>
+                    <Share2 className="h-3.5 w-3.5" /> Share Profile
+                  </Button>
                 </div>
               </CardContent>
             </Card>
