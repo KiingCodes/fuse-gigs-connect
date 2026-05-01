@@ -20,7 +20,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MapPin, Star, MessageSquare, ArrowLeft, ChevronLeft, ChevronRight, Pencil, Trash2, Phone, Mail, Globe, CalendarDays, Heart, Share2, Clock } from "lucide-react";
+import { MapPin, Star, MessageSquare, ArrowLeft, ChevronLeft, ChevronRight, Pencil, Trash2, Phone, Mail, Globe, CalendarDays, Heart, Share2, Clock, UserCircle2 } from "lucide-react";
+import { buildShareUrl, shareLink } from "@/lib/share";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
@@ -83,24 +84,26 @@ const HustleDetail = () => {
   };
 
   const handleShare = async () => {
-    const baseUrl = window.location.origin;
-    const shareUrl = `${baseUrl}/hustle/${id}`;
-    try {
-      if (navigator.share) {
-        await navigator.share({ title: hustle?.title, url: shareUrl });
-      } else {
-        await navigator.clipboard.writeText(shareUrl);
-        toast.success("Link copied!");
-      }
-    } catch {
-      // Fallback if share is denied or fails
-      try {
-        await navigator.clipboard.writeText(shareUrl);
-        toast.success("Link copied!");
-      } catch {
-        toast.error("Could not share. Please copy the URL manually.");
-      }
-    }
+    const shareUrl = buildShareUrl(`/hustle/${id}`);
+    await shareLink({
+      url: shareUrl,
+      title: hustle?.title,
+      text: hustle?.description?.slice(0, 120),
+      toastSuccess: toast.success,
+      toastError: toast.error,
+    });
+  };
+
+  const handleShareProfile = async () => {
+    if (!hustle) return;
+    const shareUrl = buildShareUrl(`/u/${hustle.user_id}`);
+    await shareLink({
+      url: shareUrl,
+      title: profileData?.display_name ? `${profileData.display_name} on Fuse Gigs` : "Hustler profile",
+      text: profileData?.bio || "Check out this hustler on Fuse Gigs!",
+      toastSuccess: toast.success,
+      toastError: toast.error,
+    });
   };
 
   const media = hustle?.hustle_media?.sort((a, b) => a.display_order - b.display_order) || [];
