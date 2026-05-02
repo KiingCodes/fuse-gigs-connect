@@ -60,6 +60,18 @@ const SUBURB_COORDS: Record<string, { lat: number; lng: number }> = {
 
 const Explore = () => {
   const [search, setSearch] = useState("");
+  const suburbTypewriter = useTypewriter([
+    "Search suburb (Tembisa, Soweto...)",
+    "Try Sandton or Midrand",
+    "Find services in Pretoria",
+    "Look up Cape Town areas",
+  ]);
+  const searchTypewriter = useTypewriter([
+    "Search hustles...",
+    "e.g. plumber, tutor, hair stylist",
+    "Find a barber near you",
+    "Need car wash today?",
+  ]);
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>();
   const [viewMode, setViewMode] = useState<"list" | "map">("list");
   const [sortBy, setSortBy] = useState<SortOption>("newest");
