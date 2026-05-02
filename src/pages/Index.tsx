@@ -63,7 +63,7 @@ const Index = () => {
           <div className="mx-auto flex max-w-xl gap-2">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
-              <Input placeholder={t("hero.search")} value={search} onChange={(e) => setSearch(e.target.value)} className="h-12 pl-10 bg-background text-foreground" />
+              <Input placeholder={typewriter || t("hero.search")} value={search} onChange={(e) => setSearch(e.target.value)} className="h-12 pl-10 bg-background text-foreground" />
             </div>
             <Link to="/explore">
               <Button className="h-12 gradient-primary text-primary-foreground px-6 gap-2">{t("hero.explore")} <ArrowRight className="h-4 w-4" /></Button>
