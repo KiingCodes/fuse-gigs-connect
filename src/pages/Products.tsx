@@ -365,6 +365,11 @@ const Products = () => {
                 </div>
 
                 <DialogFooter className="mt-5 flex-row gap-2 sm:justify-end">
+                  {user && detailProduct.user_id !== user.id && (
+                    <Button size="sm" className="gap-1 gradient-primary text-primary-foreground" onClick={() => setInquiryProduct(detailProduct)}>
+                      <MessageSquare className="h-4 w-4" /> Inquire
+                    </Button>
+                  )}
                   <Button variant="outline" size="sm" className="gap-1" onClick={() => handleShare(detailProduct)}>
                     <Share2 className="h-4 w-4" /> Share
                   </Button>
@@ -374,6 +379,14 @@ const Products = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      {inquiryProduct && (
+        <ProductInquiryDialog
+          open={!!inquiryProduct}
+          onOpenChange={(o) => !o && setInquiryProduct(null)}
+          product={inquiryProduct}
+        />
+      )}
     </div>
   );
 };
