@@ -24,6 +24,13 @@ const Index = () => {
   const { user } = useAuth();
   const { t } = useLanguage();
   const [search, setSearch] = useState("");
+  const typewriter = useTypewriter([
+    "Find a plumber nearby...",
+    "Search hair stylists in Tembisa",
+    "Need a tutor today?",
+    "Discover local hustles",
+    "Hire a graphic designer",
+  ]);
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>();
   const { data: featuredHustles, isLoading: featuredLoading } = useFeaturedHustles();
   const { data: hustles, isLoading } = useHustles(selectedCategory, search);
