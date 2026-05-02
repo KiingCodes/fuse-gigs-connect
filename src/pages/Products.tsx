@@ -216,7 +216,7 @@ const Products = () => {
             <Input
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search products, materials, tools..."
+              placeholder={productTypewriter}
               className="h-11 pl-10 bg-white/95 backdrop-blur border-0 shadow-md text-foreground"
             />
           </div>
