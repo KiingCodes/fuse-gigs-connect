@@ -5,8 +5,9 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import Navbar from "@/components/Navbar";
 import SEO from "@/components/SEO";
 import HustleCard from "@/components/HustleCard";
-import VerticalHustleCarousel from "@/components/VerticalHustleCarousel";
+import HorizontalHustleCarousel from "@/components/HorizontalHustleCarousel";
 import InstallBanner from "@/components/InstallBanner";
+import { useTypewriter } from "@/hooks/useTypewriter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -23,6 +24,13 @@ const Index = () => {
   const { user } = useAuth();
   const { t } = useLanguage();
   const [search, setSearch] = useState("");
+  const typewriter = useTypewriter([
+    "Find a plumber nearby...",
+    "Search hair stylists in Tembisa",
+    "Need a tutor today?",
+    "Discover local hustles",
+    "Hire a graphic designer",
+  ]);
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>();
   const { data: featuredHustles, isLoading: featuredLoading } = useFeaturedHustles();
   const { data: hustles, isLoading } = useHustles(selectedCategory, search);
@@ -55,7 +63,7 @@ const Index = () => {
           <div className="mx-auto flex max-w-xl gap-2">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
-              <Input placeholder={t("hero.search")} value={search} onChange={(e) => setSearch(e.target.value)} className="h-12 pl-10 bg-background text-foreground" />
+              <Input placeholder={typewriter || t("hero.search")} value={search} onChange={(e) => setSearch(e.target.value)} className="h-12 pl-10 bg-background text-foreground" />
             </div>
             <Link to="/explore">
               <Button className="h-12 gradient-primary text-primary-foreground px-6 gap-2">{t("hero.explore")} <ArrowRight className="h-4 w-4" /></Button>
@@ -151,16 +159,16 @@ const Index = () => {
           <div className="mb-6 flex items-center justify-between">
             <div>
               <h2 className="text-2xl font-bold text-foreground">{t("section.latest")}</h2>
-              <p className="text-xs text-muted-foreground mt-0.5">Auto-scrolling — hover to pause</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Auto-sliding sideways — hover to pause</p>
             </div>
             <Link to="/explore"><Button variant="outline" size="sm" className="gap-1">{t("section.viewAll")} <ArrowRight className="h-4 w-4" /></Button></Link>
           </div>
           {isLoading ? (
-            <div className="grid gap-4 sm:grid-cols-2">
-              {[...Array(4)].map((_, i) => <div key={i} className="aspect-[5/6] animate-pulse rounded-2xl bg-muted" />)}
+            <div className="flex gap-4 overflow-hidden">
+              {[...Array(4)].map((_, i) => <div key={i} className="aspect-[5/6] w-[78%] sm:w-[44%] lg:w-[31%] xl:w-[23%] shrink-0 animate-pulse rounded-2xl bg-muted" />)}
             </div>
           ) : sortedHustles.length > 0 ? (
-            <VerticalHustleCarousel hustles={sortedHustles} boostedIds={boostedIds} />
+            <HorizontalHustleCarousel hustles={sortedHustles} boostedIds={boostedIds} />
           ) : (
             <div className="py-16 text-center">
               <p className="text-lg text-muted-foreground">{t("section.noHustles")}</p>

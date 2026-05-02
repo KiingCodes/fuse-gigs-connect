@@ -9,10 +9,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { Send, Image as ImageIcon, Trash2, Users } from "lucide-react";
+import { Send, Image as ImageIcon, Trash2, Users, Video } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
+import VoiceRecorder from "@/components/VoiceRecorder";
+import { useTypewriter } from "@/hooks/useTypewriter";
 import { Link, useNavigate } from "react-router-dom";
 
 const Community = () => {

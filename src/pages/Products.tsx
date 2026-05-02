@@ -18,6 +18,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Link } from "react-router-dom";
 import { buildShareUrl, shareLink } from "@/lib/share";
 import { trackProductView } from "@/hooks/useViews";
+import { useTypewriter } from "@/hooks/useTypewriter";
+import ProductInquiryDialog from "@/components/ProductInquiryDialog";
+import { MessageSquare } from "lucide-react";
 
 const Products = () => {
   const { user } = useAuth();
@@ -25,6 +28,13 @@ const Products = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [detailProduct, setDetailProduct] = useState<any | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [inquiryProduct, setInquiryProduct] = useState<any | null>(null);
+  const productTypewriter = useTypewriter([
+    "Search products, materials, tools...",
+    "Find hair extensions",
+    "Looking for paint supplies?",
+    "Browse handmade crafts",
+  ]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
@@ -206,7 +216,7 @@ const Products = () => {
             <Input
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search products, materials, tools..."
+              placeholder={productTypewriter}
               className="h-11 pl-10 bg-white/95 backdrop-blur border-0 shadow-md text-foreground"
             />
           </div>
@@ -355,6 +365,11 @@ const Products = () => {
                 </div>
 
                 <DialogFooter className="mt-5 flex-row gap-2 sm:justify-end">
+                  {user && detailProduct.user_id !== user.id && (
+                    <Button size="sm" className="gap-1 gradient-primary text-primary-foreground" onClick={() => setInquiryProduct(detailProduct)}>
+                      <MessageSquare className="h-4 w-4" /> Inquire
+                    </Button>
+                  )}
                   <Button variant="outline" size="sm" className="gap-1" onClick={() => handleShare(detailProduct)}>
                     <Share2 className="h-4 w-4" /> Share
                   </Button>
@@ -364,6 +379,14 @@ const Products = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      {inquiryProduct && (
+        <ProductInquiryDialog
+          open={!!inquiryProduct}
+          onOpenChange={(o) => !o && setInquiryProduct(null)}
+          product={inquiryProduct}
+        />
+      )}
     </div>
   );
 };

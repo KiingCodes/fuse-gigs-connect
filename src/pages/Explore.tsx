@@ -15,6 +15,8 @@ import { Label } from "@/components/ui/label";
 import { Search, MapPin, List, Map, Locate, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { useTypewriter } from "@/hooks/useTypewriter";
+import SaveSearchButton from "@/components/SaveSearchButton";
 
 type SortOption = "distance" | "newest" | "price_low" | "price_high";
 type DistanceFilter = "1" | "5" | "10" | "25" | "50" | "any";
@@ -58,6 +60,18 @@ const SUBURB_COORDS: Record<string, { lat: number; lng: number }> = {
 
 const Explore = () => {
   const [search, setSearch] = useState("");
+  const suburbTypewriter = useTypewriter([
+    "Search suburb (Tembisa, Soweto...)",
+    "Try Sandton or Midrand",
+    "Find services in Pretoria",
+    "Look up Cape Town areas",
+  ]);
+  const searchTypewriter = useTypewriter([
+    "Search hustles...",
+    "e.g. plumber, tutor, hair stylist",
+    "Find a barber near you",
+    "Need car wash today?",
+  ]);
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>();
   const [viewMode, setViewMode] = useState<"list" | "map">("list");
   const [sortBy, setSortBy] = useState<SortOption>("newest");
@@ -184,7 +198,7 @@ const Explore = () => {
           <div className="relative flex-1">
             <MapPin className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
-              placeholder="Search suburb (e.g. Tembisa, Soweto...)"
+              placeholder={suburbTypewriter}
               value={suburbSearch}
               onChange={(e) => {
                 setSuburbSearch(e.target.value);
@@ -221,12 +235,14 @@ const Explore = () => {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
             <Input
-              placeholder="Search hustles..."
+              placeholder={searchTypewriter}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="pl-10"
             />
           </div>
+
+          <SaveSearchButton query={search} categoryId={selectedCategory} maxDistanceKm={distanceFilter !== "any" ? parseInt(distanceFilter) : undefined} location={suburbSearch} />
 
           <Select value={distanceFilter} onValueChange={(v) => setDistanceFilter(v as DistanceFilter)}>
             <SelectTrigger className="w-[140px]">

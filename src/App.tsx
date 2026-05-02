@@ -8,6 +8,7 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import { DataModeProvider } from "@/contexts/DataModeContext";
 import { HelmetProvider } from "react-helmet-async";
 import CookieConsent from "@/components/CookieConsent";
+import VersionBanner from "@/components/VersionBanner";
 import { lazy, Suspense } from "react";
 
 // Eagerly loaded (homepage)
@@ -62,6 +63,7 @@ const App = () => (
               <Sonner />
               <CookieConsent />
               <BrowserRouter>
+                <VersionBanner />
                 <Suspense fallback={<PageLoader />}>
                   <Routes>
                     <Route path="/" element={<Index />} />
