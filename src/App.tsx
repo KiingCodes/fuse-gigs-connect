@@ -63,6 +63,7 @@ const App = () => (
               <Sonner />
               <CookieConsent />
               <BrowserRouter>
+                <VersionBanner />
                 <Suspense fallback={<PageLoader />}>
                   <Routes>
                     <Route path="/" element={<Index />} />
