@@ -159,16 +159,16 @@ const Index = () => {
           <div className="mb-6 flex items-center justify-between">
             <div>
               <h2 className="text-2xl font-bold text-foreground">{t("section.latest")}</h2>
-              <p className="text-xs text-muted-foreground mt-0.5">Auto-scrolling — hover to pause</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Auto-sliding sideways — hover to pause</p>
             </div>
             <Link to="/explore"><Button variant="outline" size="sm" className="gap-1">{t("section.viewAll")} <ArrowRight className="h-4 w-4" /></Button></Link>
           </div>
           {isLoading ? (
-            <div className="grid gap-4 sm:grid-cols-2">
-              {[...Array(4)].map((_, i) => <div key={i} className="aspect-[5/6] animate-pulse rounded-2xl bg-muted" />)}
+            <div className="flex gap-4 overflow-hidden">
+              {[...Array(4)].map((_, i) => <div key={i} className="aspect-[5/6] w-[78%] sm:w-[44%] lg:w-[31%] xl:w-[23%] shrink-0 animate-pulse rounded-2xl bg-muted" />)}
             </div>
           ) : sortedHustles.length > 0 ? (
-            <VerticalHustleCarousel hustles={sortedHustles} boostedIds={boostedIds} />
+            <HorizontalHustleCarousel hustles={sortedHustles} boostedIds={boostedIds} />
           ) : (
             <div className="py-16 text-center">
               <p className="text-lg text-muted-foreground">{t("section.noHustles")}</p>
