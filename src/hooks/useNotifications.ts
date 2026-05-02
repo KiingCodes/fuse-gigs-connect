@@ -9,13 +9,14 @@ type NotifType = {
 };
 
 export const sendNotification = async (notif: NotifType) => {
-  await supabase.from("notifications").insert({
+  const { error } = await supabase.from("notifications").insert({
     user_id: notif.user_id,
     title: notif.title,
     body: notif.body,
     type: notif.type,
     reference_id: notif.reference_id || null,
   });
+  if (error) console.error("notify error", error);
 };
 
 // 20+ notification types
@@ -43,6 +44,9 @@ export const notifyBoostExpiring = (userId: string, hustleTitle: string, hustleI
 export const notifyNewInquiry = (userId: string, inquirerName: string, hustleTitle: string, hustleId: string) =>
   sendNotification({ user_id: userId, title: "New Inquiry 📩", body: `${inquirerName} is interested in "${hustleTitle}".`, type: "inquiry", reference_id: hustleId });
 
+export const notifyProductInquiry = (sellerId: string, buyerName: string, productTitle: string, productId: string) =>
+  sendNotification({ user_id: sellerId, title: "New Product Inquiry 🛒", body: `${buyerName} wants to buy "${productTitle}".`, type: "product_inquiry", reference_id: productId });
+
 export const notifyVerificationApproved = (userId: string, level: number) =>
   sendNotification({ user_id: userId, title: "Verification Approved ✓", body: `Congratulations! Your Level ${level} verification has been approved.`, type: "verification" });
 
@@ -64,17 +68,8 @@ export const notifyHustleSaved = (userId: string, saverName: string, hustleTitle
 export const notifyBookingReminder = (userId: string, hustleTitle: string, bookingId: string) =>
   sendNotification({ user_id: userId, title: "Booking Reminder ⏰", body: `Your booking for "${hustleTitle}" is coming up soon!`, type: "booking_reminder", reference_id: bookingId });
 
-export const notifyHustleExpiring = (userId: string, hustleTitle: string, hustleId: string) =>
-  sendNotification({ user_id: userId, title: "Hustle Needs Attention 🔔", body: `"${hustleTitle}" hasn't been updated in a while. Keep it fresh!`, type: "hustle_expiring", reference_id: hustleId });
-
-export const notifyNewFollower = (userId: string, followerName: string) =>
-  sendNotification({ user_id: userId, title: "New Follower 🙌", body: `${followerName} started following your hustles.`, type: "new_follower" });
-
-export const notifyPaymentReceived = (userId: string, amount: number, hustleTitle: string) =>
-  sendNotification({ user_id: userId, title: "Payment Received 💰", body: `You received R${amount} for "${hustleTitle}".`, type: "payment" });
-
-export const notifyAcademyNewLesson = (userId: string, lessonTitle: string) =>
-  sendNotification({ user_id: userId, title: "New Academy Lesson 🎓", body: `"${lessonTitle}" is now available in the Hustler Academy!`, type: "academy" });
+export const notifyVersionUpgrade = (userId: string, version: string, title: string) =>
+  sendNotification({ user_id: userId, title: `New version available: v${version} 🎁`, body: title, type: "version_upgrade" });
 
 export const notifyMilestone = (userId: string, milestone: string) =>
   sendNotification({ user_id: userId, title: "Achievement Unlocked 🏆", body: milestone, type: "milestone" });
