@@ -15,6 +15,8 @@ import { Label } from "@/components/ui/label";
 import { Search, MapPin, List, Map, Locate, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { useTypewriter } from "@/hooks/useTypewriter";
+import SaveSearchButton from "@/components/SaveSearchButton";
 
 type SortOption = "distance" | "newest" | "price_low" | "price_high";
 type DistanceFilter = "1" | "5" | "10" | "25" | "50" | "any";
