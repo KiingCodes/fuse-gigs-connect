@@ -235,12 +235,14 @@ const Explore = () => {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
             <Input
-              placeholder="Search hustles..."
+              placeholder={searchTypewriter}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="pl-10"
             />
           </div>
+
+          <SaveSearchButton query={search} categoryId={selectedCategory} maxDistanceKm={distanceFilter !== "any" ? parseInt(distanceFilter) : undefined} location={suburbSearch} />
 
           <Select value={distanceFilter} onValueChange={(v) => setDistanceFilter(v as DistanceFilter)}>
             <SelectTrigger className="w-[140px]">
