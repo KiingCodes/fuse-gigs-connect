@@ -8,6 +8,7 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import { DataModeProvider } from "@/contexts/DataModeContext";
 import { HelmetProvider } from "react-helmet-async";
 import CookieConsent from "@/components/CookieConsent";
+import VersionBanner from "@/components/VersionBanner";
 import { lazy, Suspense } from "react";
 
 // Eagerly loaded (homepage)
