@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_versions: {
+        Row: {
+          id: string
+          is_current: boolean
+          notes: string | null
+          released_at: string
+          title: string
+          version: string
+        }
+        Insert: {
+          id?: string
+          is_current?: boolean
+          notes?: string | null
+          released_at?: string
+          title: string
+          version: string
+        }
+        Update: {
+          id?: string
+          is_current?: boolean
+          notes?: string | null
+          released_at?: string
+          title?: string
+          version?: string
+        }
+        Relationships: []
+      }
       bookings: {
         Row: {
           booking_date: string
@@ -388,6 +415,45 @@ export type Database = {
           },
         ]
       }
+      hustle_revisions: {
+        Row: {
+          category_id: string | null
+          created_at: string
+          description: string | null
+          hustle_id: string
+          id: string
+          location: string | null
+          price: number | null
+          snapshot: Json | null
+          title: string | null
+          user_id: string
+        }
+        Insert: {
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          hustle_id: string
+          id?: string
+          location?: string | null
+          price?: number | null
+          snapshot?: Json | null
+          title?: string | null
+          user_id: string
+        }
+        Update: {
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          hustle_id?: string
+          id?: string
+          location?: string | null
+          price?: number | null
+          snapshot?: Json | null
+          title?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       hustle_views: {
         Row: {
           hustle_id: string
@@ -568,6 +634,45 @@ export type Database = {
           title?: string
           type?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      product_inquiries: {
+        Row: {
+          buyer_id: string
+          contact_email: string | null
+          contact_phone: string | null
+          created_at: string
+          id: string
+          message: string
+          product_id: string
+          seller_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          buyer_id: string
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          message: string
+          product_id: string
+          seller_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          buyer_id?: string
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          message?: string
+          product_id?: string
+          seller_id?: string
+          status?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -772,6 +877,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      saved_searches: {
+        Row: {
+          category_id: string | null
+          created_at: string
+          id: string
+          location: string | null
+          max_distance_km: number | null
+          name: string
+          query_text: string | null
+          user_id: string
+        }
+        Insert: {
+          category_id?: string | null
+          created_at?: string
+          id?: string
+          location?: string | null
+          max_distance_km?: number | null
+          name: string
+          query_text?: string | null
+          user_id: string
+        }
+        Update: {
+          category_id?: string | null
+          created_at?: string
+          id?: string
+          location?: string | null
+          max_distance_km?: number | null
+          name?: string
+          query_text?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       scam_reports: {
         Row: {
