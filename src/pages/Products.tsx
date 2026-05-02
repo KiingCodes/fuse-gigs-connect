@@ -28,6 +28,13 @@ const Products = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [detailProduct, setDetailProduct] = useState<any | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [inquiryProduct, setInquiryProduct] = useState<any | null>(null);
+  const productTypewriter = useTypewriter([
+    "Search products, materials, tools...",
+    "Find hair extensions",
+    "Looking for paint supplies?",
+    "Browse handmade crafts",
+  ]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
