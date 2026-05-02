@@ -18,6 +18,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Link } from "react-router-dom";
 import { buildShareUrl, shareLink } from "@/lib/share";
 import { trackProductView } from "@/hooks/useViews";
+import { useTypewriter } from "@/hooks/useTypewriter";
+import ProductInquiryDialog from "@/components/ProductInquiryDialog";
+import { MessageSquare } from "lucide-react";
 
 const Products = () => {
   const { user } = useAuth();
