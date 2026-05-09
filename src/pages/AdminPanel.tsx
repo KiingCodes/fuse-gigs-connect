@@ -72,7 +72,8 @@ const FraudReportsPanel = () => {
       const { error } = await supabase.from("user_flags").insert({ user_id: userId, reason, flag_type: flagType });
       if (error) throw error;
     },
-    onSuccess: () => toast.success("User flagged"),
+    onSuccess: (_, vars) => toast.success(vars.flagType === "banned" ? "User banned 🚫" : "User flagged"),
+    onError: (err: any) => toast.error(err.message || "Action failed"),
   });
 
   return (
@@ -126,17 +127,32 @@ const FraudReportsPanel = () => {
                   </div>
                   {report.admin_notes && <div className="text-sm rounded-lg border p-3 bg-muted/30"><span className="font-medium">Admin Notes: </span>{report.admin_notes}</div>}
                   {report.status === "pending" && (
-                    <div className="flex gap-2 pt-2">
-                      <Button size="sm" className="flex-1 gap-1" onClick={() => updateReport.mutate({ id: report.id, status: "reviewed" })}>
+                    <div className="flex flex-wrap gap-2 pt-2">
+                      <Button size="sm" className="flex-1 min-w-[140px] gap-1" onClick={() => updateReport.mutate({ id: report.id, status: "reviewed" })}>
                         <CheckCircle className="h-4 w-4" /> Mark Reviewed
                       </Button>
-                      <Button size="sm" variant="outline" className="flex-1 gap-1" onClick={() => updateReport.mutate({ id: report.id, status: "resolved" })}>
+                      <Button size="sm" variant="outline" className="flex-1 min-w-[100px] gap-1" onClick={() => updateReport.mutate({ id: report.id, status: "resolved" })}>
                         Resolve
                       </Button>
                       {report.reported_user_id && (
-                        <Button size="sm" variant="destructive" className="gap-1" onClick={() => flagUser.mutate({ userId: report.reported_user_id, reason: report.reason, flagType: "warning" })}>
-                          <Flag className="h-4 w-4" /> Flag User
-                        </Button>
+                        <>
+                          <Button size="sm" variant="secondary" className="gap-1" onClick={() => flagUser.mutate({ userId: report.reported_user_id, reason: report.reason, flagType: "warning" })}>
+                            <Flag className="h-4 w-4" /> Flag
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            className="gap-1"
+                            onClick={() => {
+                              if (confirm("Ban this user? They will be flagged as banned and unable to use the app.")) {
+                                flagUser.mutate({ userId: report.reported_user_id, reason: `BANNED: ${report.reason}`, flagType: "banned" });
+                                updateReport.mutate({ id: report.id, status: "resolved", adminNotes: "User banned" });
+                              }
+                            }}
+                          >
+                            <Ban className="h-4 w-4" /> Ban User
+                          </Button>
+                        </>
                       )}
                     </div>
                   )}
