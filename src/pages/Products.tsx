@@ -20,6 +20,7 @@ import { buildShareUrl, shareLink } from "@/lib/share";
 import { trackProductView } from "@/hooks/useViews";
 import { useTypewriter } from "@/hooks/useTypewriter";
 import ProductInquiryDialog from "@/components/ProductInquiryDialog";
+import Lightbox from "@/components/Lightbox";
 import { MessageSquare } from "lucide-react";
 
 const Products = () => {
@@ -29,6 +30,7 @@ const Products = () => {
   const [detailProduct, setDetailProduct] = useState<any | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [inquiryProduct, setInquiryProduct] = useState<any | null>(null);
+  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
   const productTypewriter = useTypewriter([
     "Search products, materials, tools...",
     "Find hair extensions",
@@ -311,16 +313,16 @@ const Products = () => {
             <div className="grid sm:grid-cols-2">
               <div className="relative aspect-square sm:aspect-auto bg-muted">
                 {detailProduct.media_url ? (
-                  <img src={detailProduct.media_url} alt={detailProduct.title} className="h-full w-full object-cover" />
+                  <button onClick={() => setLightboxSrc(detailProduct.media_url)} className="block h-full w-full" aria-label="View image">
+                    <img src={detailProduct.media_url} alt={detailProduct.title} className="h-full w-full object-cover cursor-zoom-in" />
+                  </button>
                 ) : (
                   <div className="flex h-full w-full items-center justify-center"><Package className="h-20 w-20 text-muted-foreground/30" /></div>
                 )}
                 <div className="absolute top-3 left-3 rounded-xl bg-white text-foreground px-3 py-1.5 font-extrabold shadow-lg">R{detailProduct.price}</div>
-                {detailProduct.view_count > 0 && (
-                  <Badge className="absolute top-3 right-3 bg-black/60 text-white border-0 gap-1 backdrop-blur-sm">
-                    <Eye className="h-3 w-3" /> {detailProduct.view_count} views
-                  </Badge>
-                )}
+                <Badge className="absolute top-3 right-3 bg-black/60 text-white border-0 gap-1 backdrop-blur-sm">
+                  <Eye className="h-3 w-3" /> {detailProduct.view_count || 0} {detailProduct.view_count === 1 ? "view" : "views"}
+                </Badge>
               </div>
               <div className="flex flex-col p-5">
                 <DialogHeader>
@@ -386,6 +388,10 @@ const Products = () => {
           onOpenChange={(o) => !o && setInquiryProduct(null)}
           product={inquiryProduct}
         />
+      )}
+
+      {lightboxSrc && (
+        <Lightbox open={!!lightboxSrc} onClose={() => setLightboxSrc(null)} src={lightboxSrc} />
       )}
     </div>
   );

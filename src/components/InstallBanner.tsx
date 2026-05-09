@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { X, Download, Smartphone } from "lucide-react";
+import { X, Download, Sparkles } from "lucide-react";
+import logo from "@/assets/logo.png";
+import { motion, AnimatePresence } from "framer-motion";
 
 const InstallBanner = () => {
   const [show, setShow] = useState(false);
@@ -9,24 +11,19 @@ const InstallBanner = () => {
   useEffect(() => {
     const dismissed = localStorage.getItem("pwa-install-dismissed");
     if (dismissed) return;
-
-    // Check if already installed
     if (window.matchMedia("(display-mode: standalone)").matches) return;
+    if ((window.navigator as any).standalone) return;
 
     const handler = (e: any) => {
       e.preventDefault();
       setDeferredPrompt(e);
       setShow(true);
     };
-
     window.addEventListener("beforeinstallprompt", handler);
 
-    // Show banner anyway after 3 seconds for browsers that don't fire the event
     const timer = setTimeout(() => {
-      if (!window.matchMedia("(display-mode: standalone)").matches) {
-        setShow(true);
-      }
-    }, 3000);
+      if (!window.matchMedia("(display-mode: standalone)").matches) setShow(true);
+    }, 4000);
 
     return () => {
       window.removeEventListener("beforeinstallprompt", handler);
@@ -38,13 +35,10 @@ const InstallBanner = () => {
     if (deferredPrompt) {
       deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
-      if (outcome === "accepted") {
-        setShow(false);
-      }
+      if (outcome === "accepted") setShow(false);
       setDeferredPrompt(null);
     } else {
-      // For iOS / browsers without install prompt
-      setShow(false);
+      handleDismiss();
     }
   };
 
@@ -53,28 +47,62 @@ const InstallBanner = () => {
     localStorage.setItem("pwa-install-dismissed", "true");
   };
 
-  if (!show) return null;
-
   return (
-    <div className="relative overflow-hidden rounded-xl border border-primary/20 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/5 p-4 sm:p-5">
-      <button onClick={handleDismiss} className="absolute right-2 top-2 rounded-full p-1 text-muted-foreground hover:text-foreground transition-colors">
-        <X className="h-4 w-4" />
-      </button>
-      <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-between">
-        <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/20 shrink-0">
-            <Smartphone className="h-6 w-6 text-primary" />
+    <AnimatePresence>
+      {show && (
+        <motion.div
+          initial={{ y: 120, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 120, opacity: 0 }}
+          transition={{ type: "spring", stiffness: 260, damping: 24 }}
+          className="fixed bottom-4 left-1/2 z-[60] w-[min(94vw,440px)] -translate-x-1/2"
+          style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
+        >
+          <div className="relative overflow-hidden rounded-2xl border border-primary/30 bg-gradient-to-br from-background via-background to-accent/40 p-4 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.35)] backdrop-blur-xl">
+            {/* shimmer accents */}
+            <div className="pointer-events-none absolute -top-12 -right-12 h-40 w-40 rounded-full bg-primary/30 blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-12 -left-12 h-32 w-32 rounded-full bg-amber-400/20 blur-3xl" />
+
+            <button
+              onClick={handleDismiss}
+              aria-label="Dismiss"
+              className="absolute right-2 top-2 rounded-full p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+
+            <div className="relative flex items-center gap-3">
+              <div className="relative shrink-0">
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary to-amber-500 blur-md opacity-60" />
+                <div className="relative h-14 w-14 rounded-2xl bg-gradient-to-br from-primary to-amber-500 p-0.5 shadow-lg">
+                  <div className="flex h-full w-full items-center justify-center rounded-[14px] bg-background">
+                    <img src={logo} alt="Fuse Gigs" className="h-10 w-10 object-contain" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-1.5">
+                  <p className="font-bold text-foreground text-sm truncate">Install Fuse Gigs</p>
+                  <Sparkles className="h-3 w-3 text-primary" />
+                </div>
+                <p className="text-[11px] text-muted-foreground leading-snug">
+                  Add to home screen — faster, offline-ready & instant alerts.
+                </p>
+              </div>
+
+              <Button
+                onClick={handleInstall}
+                size="sm"
+                className="shrink-0 gradient-primary text-primary-foreground gap-1 font-semibold shadow-md"
+              >
+                <Download className="h-3.5 w-3.5" /> Install
+              </Button>
+            </div>
           </div>
-          <div>
-            <h3 className="font-semibold text-foreground">📲 Install Fuse Gigs</h3>
-            <p className="text-sm text-muted-foreground">Get the app on your phone for faster access & notifications</p>
-          </div>
-        </div>
-        <Button onClick={handleInstall} className="gradient-primary text-primary-foreground gap-2 shrink-0">
-          <Download className="h-4 w-4" /> Install App
-        </Button>
-      </div>
-    </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 

@@ -9,6 +9,7 @@ import { DataModeProvider } from "@/contexts/DataModeContext";
 import { HelmetProvider } from "react-helmet-async";
 import CookieConsent from "@/components/CookieConsent";
 import VersionBanner from "@/components/VersionBanner";
+import InstallBanner from "@/components/InstallBanner";
 import { lazy, Suspense } from "react";
 
 // Eagerly loaded (homepage)
@@ -35,6 +36,7 @@ const Community = lazy(() => import("./pages/Community"));
 const Products = lazy(() => import("./pages/Products"));
 const Wallet = lazy(() => import("./pages/Wallet"));
 const PublicProfile = lazy(() => import("./pages/PublicProfile"));
+const SavedSearches = lazy(() => import("./pages/SavedSearches"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient({
@@ -88,9 +90,11 @@ const App = () => (
                     <Route path="/products" element={<Products />} />
                     <Route path="/wallet" element={<Wallet />} />
                     <Route path="/u/:userId" element={<PublicProfile />} />
+                    <Route path="/saved-searches" element={<SavedSearches />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </Suspense>
+                <InstallBanner />
               </BrowserRouter>
             </TooltipProvider>
           </DataModeProvider>

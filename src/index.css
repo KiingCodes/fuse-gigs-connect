@@ -103,6 +103,10 @@
   * {
     @apply border-border;
   }
+  html, body {
+    /* Prevent pull-to-refresh from showing 404/reloading on mobile */
+    overscroll-behavior-y: contain;
+  }
   body {
     @apply bg-background text-foreground antialiased;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
