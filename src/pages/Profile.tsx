@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { Camera, Share2 } from "lucide-react";
 import VerificationForm from "@/components/VerificationForm";
 import GuarantorRequestsPanel from "@/components/GuarantorRequestsPanel";
+import ProductInquiriesPanel from "@/components/ProductInquiriesPanel";
 import { buildShareUrl, shareLink } from "@/lib/share";
 
 const Profile = () => {
@@ -153,6 +154,9 @@ const Profile = () => {
 
         {/* Guarantor Requests */}
         <GuarantorRequestsPanel />
+
+        {/* Product Inquiries */}
+        <ProductInquiriesPanel />
 
         {/* Verification */}
         <VerificationForm currentLevel={profile?.verification_level ?? 0} />

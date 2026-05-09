@@ -72,10 +72,7 @@ const Index = () => {
         </motion.div>
       </section>
 
-      {/* Install Banner */}
-      <section className="container mx-auto px-4 -mt-6 relative z-10">
-        <InstallBanner />
-      </section>
+      {/* Install Banner is now globally rendered from App.tsx as a fixed bottom prompt */}
 
       {/* Stats */}
       <section className="border-b border-border bg-card py-8">
